@@ -2,15 +2,16 @@
 
 type = {
   code : 1,
-  speed : 500
+  speed : 500,
+  initialHP : 50
 };
 
 */
 
-function Enemy (type, level, initialHP) {
+function Enemy (type, level) {
   var self = this;
   self.type = type;
-  self.hp = initialHP;
+  self.hp = type.initialHP;
   self.div = $('<div class="e' + type.code + ' l' + level + '">');
 }
 
