@@ -1,5 +1,6 @@
+body {background:#444;}
 #b{float:left;height:500px;width:500px;background:#333;}
-#b div{float:left;border:1px solid #fff;border-right:none;border-bottom:none;}
+#b div{float:left;border:1px solid #444;border-right:none;border-bottom:none;}
 .h{background:blue;}
 
 .e1, .e2, .e3, .e4 {position:absolute; top:0; left:0;}
