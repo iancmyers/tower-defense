@@ -1,14 +1,20 @@
-body {background:#444;}
+body{background:#444;}
 #b{float:left;height:500px;width:500px;background:#333;}
 #b div{float:left;border:1px solid #444;border-right:none;border-bottom:none;}
 .h{background:blue;}
 
-.e1, .e2, .e3, .e4 {position:absolute; top:0; left:0;}
-.e1 {}
-.e2 {}
-.e3 {}
-.e4 {}
-
-.u1 {}
-.u2 {}
-.u3 {}
+.no {background:#aaa;}
+.e1,.e2,.e3,.e4,.l1,.l2,.l3,.l4,.u1,.u2,.u3{position:absolute;top:0;left:0;background:url('sprite.png') 0 0 no-repeat;}
+.e1,.e2,.e3,.e4,.l1,.l2,.l3,.l4{width:24px;height:18px;}
+.u1,.u2,.u3{width:32px;height:26px;}
+.e1{background-position-x:0;}
+.e2{background-position-x:-28px;}
+.e3{background-position-x:-55px;}
+.e4{background-position-x:-84px;}
+.l1{background-position-y:0;}
+.l2{background-position-y:-22px;}
+.l3{background-position-y:-44px;}
+.l4{background-position-y:-66px;}
+.u1{background-position:-2px -85px;}
+.u2{background-position:-38px -85px;}
+.u3{background-position:-74px -85px;}
