@@ -3,8 +3,8 @@ body{background:#444;}
 #b div{float:left;border:1px solid #444;border-right:none;border-bottom:none;}
 .h{background:blue;}
 
+.no {background:#aaa;}
 .e1,.e2,.e3,.e4,.l1,.l2,.l3,.l4,.u1,.u2,.u3{position:absolute;top:0;left:0;background:url('sprite.png') 0 0 no-repeat;}
-
 .e1,.e2,.e3,.e4,.l1,.l2,.l3,.l4{width:24px;height:18px;}
 .u1,.u2,.u3{width:32px;height:26px;}
 .e1{background-position-x:0;}
