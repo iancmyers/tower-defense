@@ -26,10 +26,17 @@ Enemy.prototype = {
     this.div.animate({
       top : y + 'px',
       left : x + 'px'
-    });
+    }, this.type.speed);
   },
   
   die : function () {
-    
+    var self = this;
+    self.div.animate({
+      width : '0px',
+      height : '0px'
+    }, 200, function() {
+      self.div.remove();
+      delete self;
+    });
   }
 }
