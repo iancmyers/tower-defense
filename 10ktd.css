@@ -2,6 +2,8 @@
 #b div{float:left;border:1px solid #fff;border-right:none;border-bottom:none;}
 .h{background:blue;}
 
+.no {background:#aaa;}
+
 .e1, .e2, .e3, .e4 {position:absolute; top:0; left:0;}
 .e1 {}
 .e2 {}
