@@ -1,4 +1,4 @@
-(function (undefined) {
+(function (window, undefined) {
   
   var gridSize = 50,
       life,
@@ -6,6 +6,15 @@
       level,
       loopTimeout,
       timeOfLastLoop,
+      math = Math,
+      rand = math.random,
+      floor = math.floor,
+      max = math.max,
+      abs = math.abs,
+      setTimeout = window.setTimeout,
+      setInterval = window.setInterval,
+      clearInterval = window.clearInterval,
+      clearTimeout = window.clearTimeout,
 
       b = $('#b'),
       bSize = b.width(),
@@ -15,55 +24,106 @@
       slot=undefined,
       i=0,
       toggleHover = function () {$(this).toggleClass('h')},
-    
+      
+      units = [
+        {
+          rate: 200,
+          range: 2,
+          damage: 5
+        }
+      ],
+      
+      enemies = [
+        {
+          s:5000,
+          hp:50
+        },
+        
+        {
+          s:10000,
+          hp:150
+        }
+      ],
+      
       levels = [
       
-      ];
+      ],
 
-  Game = {
-    start: function () {
-      life=20;
-      money=200;
-      level=0;
-      timeOfLastLoop=+new Date(),
-      i=0;
+    Game = {
+      start: function () {
+        life=20;
+        money=200;
+        level=0;
+        timeOfLastLoop=+new Date(),
+        i=0;
     
-      b.empty();
-      while (i++<numLocations) {
-        var cl = '',
-            s = $('<div id="'+i+'">')
-                  .height(gridSize-1)
-                  .width(gridSize-1)
-                  .click(function () {
-                    Game.click({t:$(this).data('uw')?'uw-slot':'slot',i:this.id});
-                  });
+        b.empty();
+        while (i++<numLocations) {
+          var cl = '',
+              s = $('<div id="'+i+'">')
+                    .css({
+                      height:gridSize-1,
+                      width:gridSize-1,
+                      top:gridSize*floor((i-1)/10),
+                      left:gridSize*(i%10)
+                    })
+                    .click(function () {
+                      Game.click({t:$(this).data('uw')?'uw-slot':'slot',i:this.id, el:$(this)});
+                    });
       
-        i>40&&i<51 ? s.addClass('no').data('uw',true) : s.hover(toggleHover,toggleHover);
-        b.append(s);
-      }
+          i>40&&i<51 ? s.addClass('no').data('uw',true) : s.hover(toggleHover,toggleHover);
+          b.append(s);
+        }
     
-      (function queueNextLevel() {
-        setTimeout(function () {
-          level++;
-          unleashMob();
-          queueNextLevel();
-        }, 15000);
+        (function queueNextLevel() {
+          //setTimeout(function () {
+            level++;
+            unleashMob();
+          //  queueNextLevel();
+          //}, 15000);
+        }());
+      },
+  
+      click: function (event) {
+        if (event.t=='slot') {
+          slot = slots[event.i];
+          if (!slot) {
+            var el = event.el;
+            slots[event.i] = Unit(0, el, Board.p2s(el.css('left'), el.css('top')));
+          }
+        }
+      }
+    },
+
+    unleashMob = function () {
+      i=100;
+      (function loop() {
+        if (i--) {
+          var offset = rand()*15;
+          Enemy(0, 1, 1, 0, 220+offset).moveTo(9, 4);
+          setTimeout(loop, 300);
+        }
       }());
     },
-  
-    click: function (event) {
-      console.log(event);
-      if (event.t=='slot') {
-        slot = slots[event.i];
-      }
-    }
-  }
 
-  Game.start();
-
-  function unleashMob() {
+    Board = {
+      p2s: function (x,y) {
+        return {x:floor(parseInt(x)/gridSize), y:floor(parseInt(y)/gridSize)};
+      },
     
-  }
+      s2p: function (x,y) {
+        return {x:x*gridSize, y:y*gridSize};
+      },
+    
+      diff: function (s1, s2) {
+        return max(
+                 floor(abs(s1.x - s2.x)),
+                 floor(abs(s1.y - s2.y))
+               );
+      }
+    };
+  
+  Game.start();
 
   /*
 
@@ -74,7 +134,83 @@
   };
 
   */
+  
+  
+  function Enemy(type, hpMultiplier, level, x, y) {
+    var el = $('<b>').addClass('e' + type + ' l' + level).css({top:y+'px',left:x+'px'}),
+        e = enemies[type],
+        properties = {s: e.s, hp:e.hp*hpMultiplier},
+        
+        interval = setInterval(function () {
+          slots.forEach(function (slot) {
+            var top = el.css('top'), left = el.css('left');
+            if (slot) {
+              slot.eLoc(self, Board.p2s(left, top));
+            }
+          });
+        }, 25),
+        
+        self = {
+          moveTo: function (slot) {
+            slot = Board.s2p(slot);
+            el.animate({
+              top : slot.y + 'px',
+              left : slot.x + 'px'
+            }, properties.s, 'linear');
+          },
+          
+          hitFor: function (damage) {
+            properties.hp -= damage;
+            if (properties.hp < 0) self.die();
+          },
+          
+          die: function () {
+            el.remove();
+            clearInterval(interval);
+            
+            slots.forEach(function (slot) {
+              if (slot) {
+                slot.died(self);
+              }
+            });
+          }
+        };
+    
+    b.append(el);
+    
+    return self;
+  }
+  
+  function Unit(type, slot, point) {
+    var el = $('<i>').addClass('u' + type),
+        currentTarget = null,
+        fireInterval = null,
+        self = {
+          eLoc: function (enemy, enemyPoint) {
+            //console.log(Board.diff(point, enemyPoint), units[type].range);
+            if (!currentTarget && Board.diff(point, enemyPoint) <= units[type].range) {
+              currentTarget = enemy;
+              fireInterval = setInterval(function () {
+                enemy.hitFor(units[type].damage);
+              }, units[type].rate);
+            } else if (currentTarget == enemy && Board.diff(point, enemyPoint) > units[type].range) {
+              self.died(enemy);
+            }
+          },
+          
+          died: function (enemy) {
+            if (enemy == currentTarget) {
+              currentTarget = null;
+              clearInterval(fireInterval);
+            }
+          }
+        };
+    
+    slot.append(el);
+    return self;
+  }
 
+  /*
   function Enemy (type, level) {
     var self = this;
     self.type = type;
@@ -107,7 +243,8 @@
       });
     }
   }
-
+  */
+  
   /*
 
   type = {
@@ -116,7 +253,7 @@
   }
 
   */
-
+/*
   function Unit (type, location) {
     var self = this;
     self.type = type;
@@ -145,5 +282,6 @@
       }, self.type.projectileSpeed);
     }
   }
-
-}());
+  */
+  
+}(this));
