@@ -285,7 +285,7 @@
               .animate({
                 top: enemyPoint.y,
                 left: enemyPoint.x
-              }, (Board.diff(point, enemySlot) / 25) + 150, function() {
+              }, (Board.diff(point, enemySlot) / 25) + 125, function() {
                 projectile.remove();
               });
           },
