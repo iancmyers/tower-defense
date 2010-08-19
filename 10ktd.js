@@ -108,7 +108,7 @@
           //}, 15000);
         }());
         
-        $('#l').click(function(event) {
+        $('#l .u0, #l .u1, #l .u2').click(function(event) {
           currUnit = event.target.className.split('u')[1];
         });
       },
