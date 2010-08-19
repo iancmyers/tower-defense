@@ -1,7 +1,20 @@
 (function (window, undefined) {
   
   var gridSize = 50,
-      KEY_SLOTS = [{x:0, y:7}, {x:3, y:7}, {x:3, y:5}, {x:8, y:5}, {x:8, y:9}, {x:14, y:9}, {x:14, y:6}, {x:11, y:6}, {x:11, y:2}, {x:17, y:2}, {x:17, y:7}, {x:20, y:7}],
+      KEY_SLOTS = [
+        {x:0, y:7, r:90},
+        {x:3, y:7, r:0},
+        {x:3, y:5, r:90},
+        {x:8, y:5, r:180},
+        {x:8, y:9, r:90},
+        {x:14, y:9, r:0},
+        {x:14, y:6, r:-90},
+        {x:11, y:6, r:0},
+        {x:11, y:2, r:90},
+        {x:17, y:2, r:180},
+        {x:17, y:7, r:90},
+        {x:20, y:7, r:90}
+      ],
       life,
       money,
       level,
@@ -37,7 +50,7 @@
       
       enemies = [
         {
-          s:10000,
+          s:500,
           hp:50000
         },
         
@@ -97,7 +110,7 @@
     },
 
     unleashMob = function () {
-      i=1;
+      i=100;
       (function loop() {
         if (i--) {
           Enemy(0, 1, 1);
@@ -163,7 +176,7 @@
         currentKeySlot = KEY_SLOTS[locationMark++],
         currentKeyPoint = Board.s2mp(currentKeySlot),
         offset = rand()*15,
-        el = $('<b>').addClass('e' + type + ' l' + level).css({left:currentKeyPoint.x-50+'px',top:currentKeyPoint.y+'px'}),
+        el = $('<b>').addClass('e' + type + ' l' + level).css({left:currentKeyPoint.x-50-12+'px',top:currentKeyPoint.y-9+'px'}),
         e = enemies[type],
         properties = {s: e.s, hp:e.hp*hpMultiplier},
         
@@ -185,15 +198,16 @@
             }
             duration = Board.diff(currentKeySlot, nextSlot) * e.s;
             
+            currSlot = currentKeySlot,
             currentKeySlot = nextSlot;
             currentKeyPoint = Board.s2mp(currentKeySlot);
-            self.moveTo(currentKeyPoint, duration);
+            self.moveTo(currentKeyPoint, currSlot.r, duration);
           },
           
-          moveTo: function (point, duration) {
-            el.animate({
-              top : point.y + 'px',
-              left : point.x + 'px'
+          moveTo: function (point, deg, duration) {
+            el.css('-webkit-transform','rotate('+deg+'deg)').animate({
+              top : point.y-9 + 'px',
+              left : point.x-12 + 'px'
             }, duration, 'linear', function () {
               self.nextPoint();
             });
