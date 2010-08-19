@@ -37,8 +37,8 @@
       
       enemies = [
         {
-          s:200,
-          hp:50
+          s:10000,
+          hp:50000
         },
         
         {
@@ -97,7 +97,7 @@
     },
 
     unleashMob = function () {
-      i=100;
+      i=1;
       (function loop() {
         if (i--) {
           Enemy(0, 1, 1);
@@ -105,8 +105,9 @@
         }
       }());
     },
-
+    count = 0,
     Board = {
+      /* pixels to spot: contverts from pixels to grid location */
       p2s: function (x,y) {
         return {x:floor(parseInt(x)/gridSize), y:floor(parseInt(y)/gridSize)};
       },
@@ -117,15 +118,30 @@
         return {x:p.x+(gridSize/2), y:p.y+(gridSize/2)};
       },
     
+      /* opposite of above */
       s2p: function (s) {
         return {x:s.x*gridSize, y:s.y*gridSize};
       },
     
+      /* distance in grid between two spots */
       diff: function (s1, s2) {
         return max(
                  floor(abs(s1.x - s2.x)),
                  floor(abs(s1.y - s2.y))
                );
+      },
+      
+      /* finds the angle between two spots */
+      uangle: function(s1, s2) {        
+        var angle = Math.atan((s2.y - s1.y) / (s2.x - s1.x)) * (180 / Math.PI);
+        if(s1.y < s2.y){
+          angle += 180;
+        }
+        if(count < 100) {
+          console.log((s1.y - s2.y) / (s1.x - s2.x),angle < 1 ? angle + 360 : angle);
+        }
+        count++;
+        return angle; //< 1 ? angle + 360 : angle;
       }
     };
   
@@ -220,6 +236,8 @@
               }, units[type].rate);
             } else if (currentTarget == enemy && Board.diff(point, enemyPoint) > units[type].range) {
               self.died(enemy);
+            } else if (currentTarget == enemy) {
+              self.rotate(Board.uangle(point, enemyPoint));
             }
           },
           
@@ -228,6 +246,10 @@
               currentTarget = null;
               clearInterval(fireInterval);
             }
+          },
+          
+          rotate: function (angle) {
+            el.css('-webkit-transform', 'rotate(' + angle + 'deg)');
           }
         };
     
