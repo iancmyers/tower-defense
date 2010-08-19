@@ -59,7 +59,7 @@
         i=-1;
     
         b.empty();
-        while (i++<numLocations) {
+        while (i++<numLocations-1) {
           var cl = '',
               s = $('<div id="'+i+'">')
                     .css({
