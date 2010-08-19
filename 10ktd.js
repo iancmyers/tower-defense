@@ -63,7 +63,7 @@
         // nu = number of total units in round
         // r  = rate of unit arrival
         
-        {lm:1, sm:1, u:[.75,1,0,0], l:[1,0,0,0], nu:25, r:300},
+        {lm:1, sm:1, u:[1,0,0,0],   l:[1,0,0,0], nu:25, r:300},
         {lm:1, sm:1, u:[0,1,0,0],   l:[0,0,0,0], nu:15, r:800},
         {lm:1, sm:1, u:[0,0,1,0],   l:[0,0,0,0], nu:20, r:600},
         {lm:1, sm:1, u:[0,0,0,1],   l:[0,0,0,0], nu:2, r:2000},
@@ -91,7 +91,7 @@
           rate: 300,
           range: 4,
           damage: 11,
-          cost: 25
+          cost: 20
         }
       ],
       
@@ -251,6 +251,7 @@
   
   function Enemy(type, hpMultiplier, speedMultiplier, level) {
     var locationMark = 0,
+        keepGoing = true,
         currentKeySlot = KEY_SLOTS[locationMark++],
         currentKeyPoint = Board.s2mp(currentKeySlot),
         offset = rand()*15,
@@ -269,6 +270,8 @@
         
         self = {
           nextPoint: function () {
+            if (!life || !keepGoing) return;
+            
             var nextSlot = KEY_SLOTS[locationMark++], duration;
             if (!nextSlot) {
               life--;
@@ -304,6 +307,7 @@
           
           die: function () {
             el.remove();
+            keepGoing = false;
             clearInterval(interval);
             money += properties.p*hpMultiplier;
             moneyEl.html('$' + parseFloat(money).toFixed(2));
