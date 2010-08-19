@@ -82,15 +82,15 @@
           cost: 5
         },
         {
-          rate: 300,
+          rate: 400,
           range: 2,
-          damage: 10,
+          damage: 18,
           cost: 10,
         },
         {
-          rate: 250,
+          rate: 300,
           range: 4,
-          damage: 3,
+          damage: 11,
           cost: 25
         }
       ],
@@ -98,22 +98,26 @@
       enemies = [
         {
           s:500,
-          hp:50
+          hp:50,
+          p:.25
         },
         
         {
           s:1000,
-          hp:175
+          hp:175,
+          p:.50
         },
 
         {
           s:700,
-          hp:100
+          hp:100,
+          p:.50
         },
 
         {
           s:600,
-          hp:1000
+          hp:1000,
+          p:2.50
         }
       ],
 
@@ -258,7 +262,7 @@
         offset = rand()*15,
         el = $('<b>').addClass('e' + type + ' l' + (level || "0")).css({left:currentKeyPoint.x-50-12+'px',top:currentKeyPoint.y-9+'px'}),
         e = enemies[type],
-        properties = {s: e.s*speedMultiplier, hp:e.hp*hpMultiplier},
+        properties = {p:e.p, s: e.s*speedMultiplier, hp:e.hp*hpMultiplier},
         
         interval = setInterval(function () {
           slots.forEach(function (slot) {
@@ -302,7 +306,7 @@
           die: function () {
             el.remove();
             clearInterval(interval);
-            money += 0.25*hpMultiplier;
+            money += properties.p*hpMultiplier;
             moneyEl.html('$' + parseFloat(money).toFixed(2));
             
             slots.forEach(function (slot) {
