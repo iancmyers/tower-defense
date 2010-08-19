@@ -8,7 +8,7 @@ body{background:#444;}
 #b em{position:absolute;float:left;width:51px;height:51px;background:rgba(19,19,19,.75);z-index:1;}
 .e0,.e1,.e2,.e3,.l0,.l1,.l2,.l3{z-index:2;width:24px;height:18px;-webkit-transition:-webkit-transform .25s;}
 .u0,.u1,.u2{left:8px;top:11px;width:32px;height:26px;-webkit-transition:-webkit-transform .25s;}
-.b0,.b1,.b2{width:8px;height:8px;}
+.b0,.b1,.b2{width:8px;height:8px;z-index:5;}
 .e0{background-position-x:0;}
 .e1{background-position-x:-28px;}
 .e2{background-position-x:-55px;}

@@ -1,7 +1,7 @@
 (function (window, undefined) {
   
   var gridSize = 50,
-      LEVEL_WAIT = 5000,
+      LEVEL_WAIT = 15000,
       KEY_SLOTS = [
         {x:0, y:7, r:90},
         {x:3, y:7, r:0},
@@ -47,13 +47,19 @@
         // lm = life multiplyer
         // sm = speed multiplyer
         // u  = unit percentage (2 for not in this round)
+        // l  = unit levels
         // nu = number of total units in round
         // r  = rate of unit arrival
         
-        {lm:1, sm:1, u:[1,0,0,0], nu:25, r:400},
-        {lm:1, sm:1, u:[0,1,0,0], nu:25, r:400},
-        {lm:1, sm:1, u:[0,1,0,0], nu:25, r:400},
-        {lm:1, sm:1, u:[0,1,0,0], nu:25, r:400}
+        {lm:1, sm:1, u:[.75,1,0,0], l:[1,0,0,0], nu:25, r:300},
+        {lm:1, sm:1, u:[0,1,0,0],   l:[0,0,0,0], nu:15, r:800},
+        {lm:1, sm:1, u:[0,0,1,0],   l:[0,0,0,0], nu:20, r:600},
+        {lm:1, sm:1, u:[0,0,0,1],   l:[0,0,0,0], nu:2, r:2000},
+                                             
+        {lm:1.25, sm:.75,  u:[1,0,0,0],   l:[1,1,1,1], nu:30, r:250},
+        {lm:2,    sm:1,   u:[0,1,0,0],   l:[1,1,1,1], nu:20, r:700},
+        {lm:1.4,  sm:.8,  u:[.25,0,1,0], l:[1,1,1,1], nu:20, r:600},
+        {lm:1,    sm:1,   u:[0,0,0,1],   l:[1,1,1,1], nu:3, r:3000}
       ],
       
       units = [
@@ -81,8 +87,18 @@
         },
         
         {
-          s:400,
-          hp:40
+          s:1000,
+          hp:175
+        },
+
+        {
+          s:700,
+          hp:100
+        },
+
+        {
+          s:600,
+          hp:1000
         }
       ],
 
@@ -157,9 +173,9 @@
           if (!enemies[ui]) {
             console.error("Err");
           } else {
-            Enemy(ui, level.lm, level.sm);
+            Enemy(ui, level.lm, level.sm, level.l[ui]);
           }
-          setTimeout(loop, 300);
+          setTimeout(loop, level.r);
         }
       }());
     },
@@ -214,12 +230,12 @@
   */
   
   
-  function Enemy(type, hpMultiplier, speedMultiplier) {
+  function Enemy(type, hpMultiplier, speedMultiplier, level) {
     var locationMark = 0,
         currentKeySlot = KEY_SLOTS[locationMark++],
         currentKeyPoint = Board.s2mp(currentKeySlot),
         offset = rand()*15,
-        el = $('<b>').addClass('e' + type + ' l' + 0/*level*/).css({left:currentKeyPoint.x-50-12+'px',top:currentKeyPoint.y-9+'px'}),
+        el = $('<b>').addClass('e' + type + ' l' + (level || "0")).css({left:currentKeyPoint.x-50-12+'px',top:currentKeyPoint.y-9+'px'}),
         e = enemies[type],
         properties = {s: e.s*speedMultiplier, hp:e.hp*hpMultiplier},
         
