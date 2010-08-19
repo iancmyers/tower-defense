@@ -85,7 +85,7 @@
           rate: 400,
           range: 2,
           damage: 18,
-          cost: 10,
+          cost: 10
         },
         {
           rate: 300,
