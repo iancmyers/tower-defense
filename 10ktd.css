@@ -1,32 +1,33 @@
 body{background:#444;}
-#b{position:relative;height:500px;width:500px;background:#333;}
-#b div{position:absolute;border:1px solid #444;border-right:none;border-bottom:none;}
+#b{position:relative;height:650px;width:1050px;background:#333;}
+
 .h{background:blue;}
 
-.no{background:#aaa;}
-.e0,.e1,.e2,.e4,.l0,.l1,.l2,.l3,.u0,.u1,.u2,.b0,.b1,.b2,#c5,#c10,#c20{position:absolute;top:0;left:0;background:url('sprite.png') 0 0 no-repeat;}
+#b div,.e0,.e1,.e2,.e4,.l0,.l1,.l2,.l3,.u0,.u1,.u2,.b0,.b1,.b2,#c5,#c10,#c20{position:absolute;top:0;left:0;background-image:url('sprite.png') !important;background-repeat:no-repeat;}
+#b div{position:absolute;background:none 0 -124px;}
+#b em{position:absolute;float:left;width:51px;height:51px;background:rgba(19,19,19,.75);}
 .e0,.e1,.e2,.e4,.l0,.l1,.l2,.l3{width:24px;height:18px;}
 .u0,.u1,.u2{left:8px;top:11px;width:32px;height:26px;}
 .b0,.b1,.b2{width:8px;height:8px;}
-.e0{background-position-x:0;}
-.e1{background-position-x:-28px;}
-.e2{background-position-x:-55px;}
-.e3{background-position-x:-84px;}
-.l0{background-position-y:0;}
-.l1{background-position-y:-22px;}
-.l2{background-position-y:-44px;}
-.l3{background-position-y:-66px;}
-.u0{background-position:-2px -85px;}
-.u1{background-position:-38px -85px;}
-.u2{background-position:-74px -85px;}
-.b0{background-position:-2px -114px;}
-.b1{background-position:-12px -114px;}
-.b2{background-position:-22px -114px;}
+.e0{background:0;}
+.e1{background:none 0 -28px;}
+.e2{background:none 0 -55px;}
+.e3{background:none 0 -84px;}
+.l0{background:none 0 0;}
+.l1{background:none 0 -22px;}
+.l2{background:none 0 -44px;}
+.l3{background:none 0 -66px;}
+.u0{background:none -2px -85px;}
+.u1{background:none -38px -85px;}
+.u2{background:none -74px -85px;}
+.b0{background:none -2px -114px;}
+.b1{background:none -12px -114px;}
+.b2{background:none -22px -114px;}
 
 #l{clear:left;background:#000;}
 #l p{position:relative;display:inline-block;margin:0 20px 0 0;}
-#c5{width:12px;height:14px;background-position:-54px -115px;}
-#c10{width:18px;height:14px;background-position:-54px -130px;}
-#c20{width:22px;height:14px;background-position:-55px -145px;}
+#c5{width:12px;height:14px;background:none -54px -115px;}
+#c10{width:18px;height:14px;background:none -54px -130px;}
+#c20{width:22px;height:14px;background:none -55px -145px;}
 .me{background:#292929;}
 .mf{background:#9ac715;}

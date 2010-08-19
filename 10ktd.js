@@ -19,10 +19,11 @@
       b = $('#b'),
       bSize = b.width(),
       rowsAndCols = bSize/gridSize,
-      numLocations = rowsAndCols*rowsAndCols,
+      numLocations = 21*13,
       slots=new Array(numLocations),
       slot=undefined,
       i=0,
+      pathArray=[147,148,149,150,129,108,109,110,111,112,113,134,155,176,197,198,199,200,201,202,203,182,161,140,139,138,137,116,95,74,53,54,55,56,57,58,59,80,101,122,143,164,165,166,167];
       toggleHover = function () {$(this).toggleClass('h')},
       
       units = [
@@ -55,23 +56,23 @@
         money=200;
         level=0;
         timeOfLastLoop=+new Date(),
-        i=0;
+        i=-1;
     
         b.empty();
         while (i++<numLocations) {
           var cl = '',
               s = $('<div id="'+i+'">')
                     .css({
-                      height:gridSize-1,
-                      width:gridSize-1,
-                      top:gridSize*floor((i-1)/10),
-                      left:gridSize*(i%10)
+                      height:gridSize,
+                      width:gridSize,
+                      top:gridSize*floor(i/21),
+                      left:gridSize*(i%21)
                     })
                     .click(function () {
                       Game.click({t:$(this).data('uw')?'uw-slot':'slot',i:this.id, el:$(this)});
                     });
-      
-          i>40&&i<51 ? s.addClass('no').data('uw',true) : s.hover(toggleHover,toggleHover);
+          pathArray.indexOf(i)<0 ? s.hover(toggleHover,toggleHover) : s.addClass('no').data('uw',true).append('<em>');
+          // i>40&&i<51 ? s.addClass('no').data('uw',true).append('<em>') : s.hover(toggleHover,toggleHover);
           b.append(s);
         }
     
