@@ -88,7 +88,7 @@
     Game = {
       start: function () {
         life=20;
-        money=200;
+        money=25;
         level=0;
         timeOfLastLoop=+new Date(),
         i=-1;
