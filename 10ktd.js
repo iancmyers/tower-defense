@@ -1,7 +1,7 @@
 (function (window, undefined) {
   
   var gridSize = 50,
-      KEY_SLOTS = [{x:0, y:4}, {x:3, y:4}, {x:3, y:2}, {x:7, y:2}, {x:7, y:4}, {x:9, y:4}],
+      KEY_SLOTS = [{x:0, y:7}, {x:3, y:7}, {x:3, y:5}, {x:8, y:5}, {x:8, y:9}, {x:14, y:9}, {x:14, y:6}, {x:11, y:6}, {x:11, y:2}, {x:17, y:2}, {x:17, y:7}, {x:20, y:7}],
       life,
       money,
       level,
@@ -37,7 +37,7 @@
       
       enemies = [
         {
-          s:500,
+          s:200,
           hp:50
         },
         
@@ -73,7 +73,6 @@
                       Game.click({t:$(this).data('uw')?'uw-slot':'slot',i:this.id, el:$(this)});
                     });
           pathArray.indexOf(i)<0 ? s.hover(toggleHover,toggleHover) : s.addClass('no').data('uw',true).append('<em>');
-          // i>40&&i<51 ? s.addClass('no').data('uw',true).append('<em>') : s.hover(toggleHover,toggleHover);
           b.append(s);
         }
     
