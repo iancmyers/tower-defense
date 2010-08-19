@@ -1,6 +1,7 @@
 (function (window, undefined) {
   
   var gridSize = 50,
+      KEY_SLOTS = [{x:0, y:4}, {x:3, y:4}, {x:3, y:2}, {x:7, y:2}, {x:7, y:4}, {x:9, y:4}],
       life,
       money,
       level,
@@ -35,12 +36,12 @@
       
       enemies = [
         {
-          s:5000,
+          s:500,
           hp:50
         },
         
         {
-          s:10000,
+          s:250,
           hp:150
         }
       ],
@@ -99,8 +100,7 @@
       i=100;
       (function loop() {
         if (i--) {
-          var offset = rand()*15;
-          Enemy(0, 1, 1, 0, 220+offset).moveTo(9, 4);
+          Enemy(0, 1, 1);
           setTimeout(loop, 300);
         }
       }());
@@ -110,9 +110,15 @@
       p2s: function (x,y) {
         return {x:floor(parseInt(x)/gridSize), y:floor(parseInt(y)/gridSize)};
       },
+      
+      // slotToMiddleXPoint
+      s2mp: function (s) {
+        var p = Board.s2p(s);
+        return {x:p.x+(gridSize/2), y:p.y+(gridSize/2)};
+      },
     
-      s2p: function (x,y) {
-        return {x:x*gridSize, y:y*gridSize};
+      s2p: function (s) {
+        return {x:s.x*gridSize, y:s.y*gridSize};
       },
     
       diff: function (s1, s2) {
@@ -136,8 +142,12 @@
   */
   
   
-  function Enemy(type, hpMultiplier, level, x, y) {
-    var el = $('<b>').addClass('e' + type + ' l' + level).css({top:y+'px',left:x+'px'}),
+  function Enemy(type, hpMultiplier, level) {
+    var locationMark = 0,
+        currentKeySlot = KEY_SLOTS[locationMark++],
+        currentKeyPoint = Board.s2mp(currentKeySlot),
+        offset = rand()*15,
+        el = $('<b>').addClass('e' + type + ' l' + level).css({left:currentKeyPoint.x-50+'px',top:currentKeyPoint.y+'px'}),
         e = enemies[type],
         properties = {s: e.s, hp:e.hp*hpMultiplier},
         
@@ -151,12 +161,26 @@
         }, 25),
         
         self = {
-          moveTo: function (slot) {
-            slot = Board.s2p(slot);
+          nextPoint: function () {
+            var nextSlot = KEY_SLOTS[locationMark++], duration;
+            if (!nextSlot) {
+              el.remove();
+              return;
+            }
+            duration = Board.diff(currentKeySlot, nextSlot) * e.s;
+            
+            currentKeySlot = nextSlot;
+            currentKeyPoint = Board.s2mp(currentKeySlot);
+            self.moveTo(currentKeyPoint, duration);
+          },
+          
+          moveTo: function (point, duration) {
             el.animate({
-              top : slot.y + 'px',
-              left : slot.x + 'px'
-            }, properties.s, 'linear');
+              top : point.y + 'px',
+              left : point.x + 'px'
+            }, duration, 'linear', function () {
+              self.nextPoint();
+            });
           },
           
           hitFor: function (damage) {
@@ -177,6 +201,7 @@
         };
     
     b.append(el);
+    self.nextPoint();
     
     return self;
   }
