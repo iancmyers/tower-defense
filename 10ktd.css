@@ -29,7 +29,9 @@ body{background:#444;}
 .lp{padding-top:7px;}
 
 /* Units and costs */
-.lu{float:left;margin:0 20px 0 0;}
+.lu{float:left;padding:5px;margin:0 20px 0 0;border:3px solid #000;}
+.off{border:3px solid #000;}
+.on{border:3px solid #404040;}
 .lu:last-child{margin:0;}
 #l p{position:relative;top:0;left:0;display:block;margin:0;}
 #l #c5{top:5px;left:10px;width:12px;height:14px;background:none -54px -115px;}

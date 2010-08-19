@@ -39,7 +39,17 @@
       slot=undefined,
       i=0,
       pathArray=[147,148,149,150,129,108,109,110,111,112,113,134,155,176,197,198,199,200,201,202,203,182,161,140,139,138,137,116,95,74,53,54,55,56,57,58,59,80,101,122,143,164,165,166,167];
-      toggleHover = function () {$(this).toggleClass('h')},
+      toggleOn = function () {
+        if ($(this).find('i').length == 0) {
+          $(this).append('<span class="u' + currUnit + '"></span>');
+          $(this).toggleClass('h');
+        }
+      },
+
+      toggleOff = function () {
+        $(this).find('span').remove();
+        $(this).toggleClass('h');
+      },
       
       units = [
         {
@@ -96,7 +106,7 @@
                     .click(function () {
                       Game.click({t:$(this).data('uw')?'uw-slot':'slot',i:this.id, el:$(this)});
                     });
-          pathArray.indexOf(i)<0 ? s.hover(toggleHover,toggleHover) : s.addClass('no').data('uw',true).append('<em>');
+          pathArray.indexOf(i)<0 ? s.hover(toggleOn,toggleOff) : s.addClass('no').data('uw',true).append('<em>');
           b.append(s);
         }
     
@@ -108,8 +118,15 @@
           //}, 15000);
         }());
         
-        $('#l .u0, #l .u1, #l .u2').click(function(event) {
-          currUnit = event.target.className.split('u')[1];
+        // Event to change the current weapon
+        $('#l .lu').click(function(event) {
+          currUnit = $(this).find('p')[0];
+          currUnit = parseInt(currUnit.className.split('u')[1]);
+          //console.log(currUnit);
+
+          var unit = $('#l .lu')[currUnit];          
+          $('#l .lu').removeClass('on').addClass('off');
+          $(unit).addClass('on');
         });
       },
   
