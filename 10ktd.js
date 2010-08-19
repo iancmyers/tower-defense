@@ -33,6 +33,8 @@
       currUnit = 0,
 
       b = $('#b'),
+      moneyEl = $('#money b'),
+      lifeEl = $('#life b'),
       bSize = b.width(),
       rowsAndCols = bSize/gridSize,
       numLocations = 21*13,
@@ -40,7 +42,17 @@
       slot=undefined,
       i=0,
       pathArray=[147,148,149,150,129,108,109,110,111,112,113,134,155,176,197,198,199,200,201,202,203,182,161,140,139,138,137,116,95,74,53,54,55,56,57,58,59,80,101,122,143,164,165,166,167];
-      toggleHover = function () {$(this).toggleClass('h')},
+      toggleOn = function () {
+        if ($(this).find('i').length == 0) {
+          $(this).append('<span class="u' + currUnit + '"></span>');
+          $(this).toggleClass('h');
+        }
+      },
+
+      toggleOff = function () {
+        $(this).find('span').remove();
+        $(this).toggleClass('h');
+      },
       
       levels=[
       
@@ -66,17 +78,20 @@
         {
           rate: 200,
           range: 3,
-          damage: 5
+          damage: 5,
+          cost: 5
         },
         {
           rate: 300,
           range: 2,
-          damage: 10
+          damage: 10,
+          cost: 10,
         },
         {
           rate: 250,
           range: 4,
-          damage: 3
+          damage: 3,
+          cost: 25
         }
       ],
       
@@ -105,7 +120,7 @@
     Game = {
       start: function () {
         life=20;
-        money=200;
+        money=25;
         level=0;
         timeOfLastLoop=+new Date(),
         i=-1;
@@ -123,7 +138,7 @@
                     .click(function () {
                       Game.click({t:$(this).data('uw')?'uw-slot':'slot',i:this.id, el:$(this)});
                     });
-          pathArray.indexOf(i)<0 ? s.hover(toggleHover,toggleHover) : s.addClass('no').data('uw',true).append('<em>');
+          pathArray.indexOf(i)<0 ? s.hover(toggleOn,toggleOff) : s.addClass('no').data('uw',true).append('<em>');
           b.append(s);
         }
     
@@ -140,15 +155,22 @@
           }, LEVEL_WAIT);
         }());
         
-        $('#l .u0, #l .u1, #l .u2').click(function(event) {
-          currUnit = event.target.className.split('u')[1];
+        // Event to change the current weapon
+        $('#l .lu').click(function(event) {
+          currUnit = $(this).find('p')[0];
+          currUnit = parseInt(currUnit.className.split('u')[1]);
+          //console.log(currUnit);
+
+          var unit = $('#l .lu')[currUnit];          
+          $('#l .lu').removeClass('on').addClass('off');
+          $(unit).addClass('on');
         });
       },
   
       click: function (event) {
         if (event.t=='slot') {
           slot = slots[event.i];
-          if (!slot) {
+          if (!slot && money >= units[currUnit].cost) {
             var el = event.el;
             slots[event.i] = Unit(currUnit, el, Board.p2s(el.css('left'), el.css('top')));
           }
@@ -179,7 +201,6 @@
         }
       }());
     },
-    count = 0,
     Board = {
       /* pixels to spot: contverts from pixels to grid location */
       p2s: function (x,y) {
@@ -281,6 +302,8 @@
           die: function () {
             el.remove();
             clearInterval(interval);
+            money += 0.25*hpMultiplier;
+            moneyEl.html('$' + parseFloat(money).toFixed(2));
             
             slots.forEach(function (slot) {
               if (slot) {
@@ -297,6 +320,8 @@
   }
   
   function Unit(type, slot, point) {
+    money -= units[type].cost;
+    moneyEl.html('$' + parseFloat(money).toFixed(2));
     var el = $('<i>').addClass('u' + type),
         currentTarget = null,
         fireInterval = null,
@@ -331,7 +356,7 @@
               .animate({
                 top: enemyPoint.y,
                 left: enemyPoint.x
-              }, (Board.diff(point, enemySlot) / 25) + 150, function() {
+              }, (Board.diff(point, enemySlot) / 25) + 125, function() {
                 projectile.remove();
               });
           },
