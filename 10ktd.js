@@ -147,16 +147,14 @@
       /* finds the angle between two spots */
       uangle: function(s1, s2) {        
         var angle = Math.atan((s2.y - s1.y) / (s2.x - s1.x)) * (180 / Math.PI);
-        if(s1.y < s2.y){
-          angle += 180;
+        if(s1.x > s2.x) {
+          angle += 270;
+        } else {
+          angle += 90;
         }
-        if(count < 100) {
-          console.log((s1.y - s2.y) / (s1.x - s2.x),angle < 1 ? angle + 360 : angle);
-        }
-        count++;
-        return angle; //< 1 ? angle + 360 : angle;
+        return angle;
       }
-    };
+    }
   
   Game.start();
 
