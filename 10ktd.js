@@ -227,7 +227,7 @@
           slots.forEach(function (slot) {
             var top = el.css('top'), left = el.css('left');
             if (slot) {
-              slot.eLoc(self, Board.p2s(left, top));
+              slot.eLoc(self, Board.p2s(left, top), {x:left, y:top});
             }
           });
         }, 25),
@@ -284,19 +284,40 @@
     var el = $('<i>').addClass('u' + type),
         currentTarget = null,
         fireInterval = null,
+        currentEnemyPoint = null,
+        currentEnemySlot = null,
         self = {
-          eLoc: function (enemy, enemyPoint) {
-            //console.log(Board.diff(point, enemyPoint), units[type].range);
-            if (!currentTarget && Board.diff(point, enemyPoint) <= units[type].range) {
+          eLoc: function (enemy, enemySlot, enemyPoint) {
+            if (!currentTarget && Board.diff(point, enemySlot) <= units[type].range) {
               currentTarget = enemy;
               fireInterval = setInterval(function () {
                 enemy.hitFor(units[type].damage);
+                self.fire(currentEnemyPoint, currentEnemySlot);
               }, units[type].rate);
-            } else if (currentTarget == enemy && Board.diff(point, enemyPoint) > units[type].range) {
+            } else if (currentTarget == enemy && Board.diff(point, enemySlot) > units[type].range) {
               self.died(enemy);
             } else if (currentTarget == enemy) {
-              self.rotate(Board.uangle(point, enemyPoint));
+              currentEnemyPoint = enemyPoint;
+              currentEnemySlot = enemySlot;
+              self.rotate(Board.uangle(point, enemySlot));
             }
+          },
+          
+          fire: function(enemyPoint, enemySlot) {
+            var projectile = $('<p class="b' + type + '">');
+            var start = Board.s2mp(point);
+            
+            projectile
+              .css({
+                top: start.y - 21,
+                left: start.x - 3
+              }).appendTo(b)
+              .animate({
+                top: enemyPoint.y,
+                left: enemyPoint.x
+              }, (Board.diff(point, enemySlot) / 25) + 150, function() {
+                projectile.remove();
+              });
           },
           
           died: function (enemy) {
