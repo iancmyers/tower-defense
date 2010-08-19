@@ -7,7 +7,7 @@ body{background:#444;}
 
 .e0,.e1,.e2,.e4,.l0,.l1,.l2,.l3,.u0,.u1,.u2{position:absolute;top:0;left:0;background:url('sprite.png') 0 0 no-repeat;}
 .e0,.e1,.e2,.e4,.l0,.l1,.l2,.l3{width:24px;height:18px;}
-.u0,.u1,.u2{left:8px;top:11px;width:32px;height:26px;}
+.u0,.u1,.u2{left:8px;top:11px;width:32px;height:26px;-webkit-transform:rotate(45deg);}
 .e0{background-position-x:0;}
 .e1{background-position-x:-28px;}
 .e2{background-position-x:-55px;}
