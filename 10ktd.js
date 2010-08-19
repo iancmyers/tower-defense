@@ -15,6 +15,7 @@
       setInterval = window.setInterval,
       clearInterval = window.clearInterval,
       clearTimeout = window.clearTimeout,
+      currUnit = 0,
 
       b = $('#b'),
       bSize = b.width(),
@@ -29,8 +30,18 @@
       units = [
         {
           rate: 200,
-          range: 2,
+          range: 3,
           damage: 5
+        },
+        {
+          rate: 300,
+          range: 2,
+          damage: 10
+        },
+        {
+          rate: 250,
+          range: 4,
+          damage: 3
         }
       ],
       
@@ -83,6 +94,10 @@
           //  queueNextLevel();
           //}, 15000);
         }());
+        
+        $('#l').click(function(event) {
+          currUnit = event.target.className.split('u')[1];
+        });
       },
   
       click: function (event) {
@@ -90,7 +105,7 @@
           slot = slots[event.i];
           if (!slot) {
             var el = event.el;
-            slots[event.i] = Unit(0, el, Board.p2s(el.css('left'), el.css('top')));
+            slots[event.i] = Unit(currUnit, el, Board.p2s(el.css('left'), el.css('top')));
           }
         }
       }
