@@ -194,6 +194,7 @@
             var nextSlot = KEY_SLOTS[locationMark++], duration;
             if (!nextSlot) {
               el.remove();
+              clearInterval(interval);
               return;
             }
             duration = Board.diff(currentKeySlot, nextSlot) * e.s;
