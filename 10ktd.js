@@ -1,6 +1,7 @@
 (function (window, undefined) {
   
   var gridSize = 50,
+      LEVEL_WAIT = 5000,
       KEY_SLOTS = [
         {x:0, y:7, r:90},
         {x:3, y:7, r:0},
@@ -41,6 +42,20 @@
       pathArray=[147,148,149,150,129,108,109,110,111,112,113,134,155,176,197,198,199,200,201,202,203,182,161,140,139,138,137,116,95,74,53,54,55,56,57,58,59,80,101,122,143,164,165,166,167];
       toggleHover = function () {$(this).toggleClass('h')},
       
+      levels=[
+      
+        // lm = life multiplyer
+        // sm = speed multiplyer
+        // u  = unit percentage (2 for not in this round)
+        // nu = number of total units in round
+        // r  = rate of unit arrival
+        
+        {lm:1, sm:1, u:[1,0,0,0], nu:25, r:400},
+        {lm:1, sm:1, u:[0,1,0,0], nu:25, r:400},
+        {lm:1, sm:1, u:[0,1,0,0], nu:25, r:400},
+        {lm:1, sm:1, u:[0,1,0,0], nu:25, r:400}
+      ],
+      
       units = [
         {
           rate: 200,
@@ -66,13 +81,9 @@
         },
         
         {
-          s:250,
-          hp:150
+          s:400,
+          hp:40
         }
-      ],
-      
-      levels = [
-      
       ],
 
     Game = {
@@ -101,11 +112,16 @@
         }
     
         (function queueNextLevel() {
-          //setTimeout(function () {
-            level++;
-            unleashMob();
-          //  queueNextLevel();
-          //}, 15000);
+          var nextLevel = levels[level++];
+          
+          if (!nextLevel) {
+            return; // game over once all enemies are gone
+          }
+          
+          setTimeout(function () {
+            unleashMob(nextLevel);
+            queueNextLevel();
+          }, LEVEL_WAIT);
         }());
         
         $('#l .u0, #l .u1, #l .u2').click(function(event) {
@@ -124,11 +140,25 @@
       }
     },
 
-    unleashMob = function () {
-      i=100;
+    unleashMob = function (level) {
+      var i=level.nu;
       (function loop() {
         if (i--) {
-          Enemy(0, 1, 1);
+          var ui, r = rand();
+          
+          for (ui = 0; ui < level.u.length; ui++) {
+            if (r < level.u[ui]) {
+              break;
+            }
+          }
+          
+          console.log(ui);
+          
+          if (!enemies[ui]) {
+            console.error("Err");
+          } else {
+            Enemy(ui, level.lm, level.sm);
+          }
           setTimeout(loop, 300);
         }
       }());
@@ -184,14 +214,14 @@
   */
   
   
-  function Enemy(type, hpMultiplier, level) {
+  function Enemy(type, hpMultiplier, speedMultiplier) {
     var locationMark = 0,
         currentKeySlot = KEY_SLOTS[locationMark++],
         currentKeyPoint = Board.s2mp(currentKeySlot),
         offset = rand()*15,
-        el = $('<b>').addClass('e' + type + ' l' + level).css({left:currentKeyPoint.x-50-12+'px',top:currentKeyPoint.y-9+'px'}),
+        el = $('<b>').addClass('e' + type + ' l' + 0/*level*/).css({left:currentKeyPoint.x-50-12+'px',top:currentKeyPoint.y-9+'px'}),
         e = enemies[type],
-        properties = {s: e.s, hp:e.hp*hpMultiplier},
+        properties = {s: e.s*speedMultiplier, hp:e.hp*hpMultiplier},
         
         interval = setInterval(function () {
           slots.forEach(function (slot) {
