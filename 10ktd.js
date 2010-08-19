@@ -1,6 +1,7 @@
 (function (window, undefined) {
   
   var gridSize = 50,
+      KEY_SLOTS = [{x:0, y:7}, {x:3, y:7}, {x:3, y:5}, {x:8, y:5}, {x:8, y:9}, {x:14, y:9}, {x:14, y:6}, {x:11, y:6}, {x:11, y:2}, {x:17, y:2}, {x:17, y:7}, {x:20, y:7}],
       life,
       money,
       level,
@@ -47,12 +48,12 @@
       
       enemies = [
         {
-          s:5000,
-          hp:50
+          s:10000,
+          hp:50000
         },
         
         {
-          s:10000,
+          s:250,
           hp:150
         }
       ],
@@ -83,7 +84,6 @@
                       Game.click({t:$(this).data('uw')?'uw-slot':'slot',i:this.id, el:$(this)});
                     });
           pathArray.indexOf(i)<0 ? s.hover(toggleHover,toggleHover) : s.addClass('no').data('uw',true).append('<em>');
-          // i>40&&i<51 ? s.addClass('no').data('uw',true).append('<em>') : s.hover(toggleHover,toggleHover);
           b.append(s);
         }
     
@@ -112,32 +112,51 @@
     },
 
     unleashMob = function () {
-      i=100;
+      i=1;
       (function loop() {
         if (i--) {
-          var offset = rand()*15;
-          Enemy(0, 1, 1, 0, 220+offset).moveTo(9, 4);
+          Enemy(0, 1, 1);
           setTimeout(loop, 300);
         }
       }());
     },
-
+    count = 0,
     Board = {
+      /* pixels to spot: contverts from pixels to grid location */
       p2s: function (x,y) {
         return {x:floor(parseInt(x)/gridSize), y:floor(parseInt(y)/gridSize)};
       },
-    
-      s2p: function (x,y) {
-        return {x:x*gridSize, y:y*gridSize};
+      
+      // slotToMiddleXPoint
+      s2mp: function (s) {
+        var p = Board.s2p(s);
+        return {x:p.x+(gridSize/2), y:p.y+(gridSize/2)};
       },
     
+      /* opposite of above */
+      s2p: function (s) {
+        return {x:s.x*gridSize, y:s.y*gridSize};
+      },
+    
+      /* distance in grid between two spots */
       diff: function (s1, s2) {
         return max(
                  floor(abs(s1.x - s2.x)),
                  floor(abs(s1.y - s2.y))
                );
+      },
+      
+      /* finds the angle between two spots */
+      uangle: function(s1, s2) {        
+        var angle = Math.atan((s2.y - s1.y) / (s2.x - s1.x)) * (180 / Math.PI);
+        if(s1.x > s2.x) {
+          angle += 270;
+        } else {
+          angle += 90;
+        }
+        return angle;
       }
-    };
+    }
   
   Game.start();
 
@@ -152,8 +171,12 @@
   */
   
   
-  function Enemy(type, hpMultiplier, level, x, y) {
-    var el = $('<b>').addClass('e' + type + ' l' + level).css({top:y+'px',left:x+'px'}),
+  function Enemy(type, hpMultiplier, level) {
+    var locationMark = 0,
+        currentKeySlot = KEY_SLOTS[locationMark++],
+        currentKeyPoint = Board.s2mp(currentKeySlot),
+        offset = rand()*15,
+        el = $('<b>').addClass('e' + type + ' l' + level).css({left:currentKeyPoint.x-50+'px',top:currentKeyPoint.y+'px'}),
         e = enemies[type],
         properties = {s: e.s, hp:e.hp*hpMultiplier},
         
@@ -167,12 +190,26 @@
         }, 25),
         
         self = {
-          moveTo: function (slot) {
-            slot = Board.s2p(slot);
+          nextPoint: function () {
+            var nextSlot = KEY_SLOTS[locationMark++], duration;
+            if (!nextSlot) {
+              el.remove();
+              return;
+            }
+            duration = Board.diff(currentKeySlot, nextSlot) * e.s;
+            
+            currentKeySlot = nextSlot;
+            currentKeyPoint = Board.s2mp(currentKeySlot);
+            self.moveTo(currentKeyPoint, duration);
+          },
+          
+          moveTo: function (point, duration) {
             el.animate({
-              top : slot.y + 'px',
-              left : slot.x + 'px'
-            }, properties.s, 'linear');
+              top : point.y + 'px',
+              left : point.x + 'px'
+            }, duration, 'linear', function () {
+              self.nextPoint();
+            });
           },
           
           hitFor: function (damage) {
@@ -193,6 +230,7 @@
         };
     
     b.append(el);
+    self.nextPoint();
     
     return self;
   }
@@ -211,6 +249,8 @@
               }, units[type].rate);
             } else if (currentTarget == enemy && Board.diff(point, enemyPoint) > units[type].range) {
               self.died(enemy);
+            } else if (currentTarget == enemy) {
+              self.rotate(Board.uangle(point, enemyPoint));
             }
           },
           
@@ -219,6 +259,10 @@
               currentTarget = null;
               clearInterval(fireInterval);
             }
+          },
+          
+          rotate: function (angle) {
+            el.css('-webkit-transform', 'rotate(' + angle + 'deg)');
           }
         };
     
