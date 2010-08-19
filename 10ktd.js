@@ -32,6 +32,8 @@
       currUnit = 0,
 
       b = $('#b'),
+      moneyEl = $('#money b'),
+      lifeEl = $('#life b'),
       bSize = b.width(),
       rowsAndCols = bSize/gridSize,
       numLocations = 21*13,
@@ -55,17 +57,20 @@
         {
           rate: 200,
           range: 3,
-          damage: 5
+          damage: 5,
+          cost: 5
         },
         {
           rate: 300,
           range: 2,
-          damage: 10
+          damage: 10,
+          cost: 10,
         },
         {
           rate: 250,
           range: 4,
-          damage: 3
+          damage: 3,
+          cost: 25
         }
       ],
       
@@ -133,7 +138,7 @@
       click: function (event) {
         if (event.t=='slot') {
           slot = slots[event.i];
-          if (!slot) {
+          if (!slot && money >= units[currUnit].cost) {
             var el = event.el;
             slots[event.i] = Unit(currUnit, el, Board.p2s(el.css('left'), el.css('top')));
           }
@@ -150,7 +155,6 @@
         }
       }());
     },
-    count = 0,
     Board = {
       /* pixels to spot: contverts from pixels to grid location */
       p2s: function (x,y) {
@@ -252,6 +256,8 @@
           die: function () {
             el.remove();
             clearInterval(interval);
+            money += 0.25*hpMultiplier;
+            moneyEl.html('$' + parseFloat(money).toFixed(2));
             
             slots.forEach(function (slot) {
               if (slot) {
@@ -268,6 +274,8 @@
   }
   
   function Unit(type, slot, point) {
+    money -= units[type].cost;
+    moneyEl.html('$' + parseFloat(money).toFixed(2));
     var el = $('<i>').addClass('u' + type),
         currentTarget = null,
         fireInterval = null,
