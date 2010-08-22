@@ -63,15 +63,15 @@
         // nu = number of total units in round
         // r  = rate of unit arrival
         
-        {lm:1, sm:1, u:[1,0,0,0],   l:[1,0,0,0], nu:25, r:300},
-        {lm:1, sm:1, u:[0,1,0,0],   l:[0,0,0,0], nu:15, r:800},
-        {lm:1, sm:1, u:[0,0,1,0],   l:[0,0,0,0], nu:20, r:600},
-        {lm:1, sm:1, u:[0,0,0,1],   l:[0,0,0,0], nu:2, r:2000},
+        {lm:.1, sm:1, u:[1,0,0,0],   l:[0,0,0,1], nu:20, r:300},
+        {lm:.1, sm:1, u:[0,1,0,0],   l:[0,0,0,1], nu:15, r:800},
+        {lm:.1, sm:1, u:[0,0,1,0],   l:[0,0,0,1], nu:10, r:600},
+        {lm:.1, sm:1, u:[0,0,0,1],   l:[0,0,0,1], nu:2, r:2000},
                                              
-        {lm:1.25, sm:.75,  u:[1,0,0,0],   l:[1,1,1,1], nu:30, r:250},
-        {lm:2,    sm:1,   u:[0,1,0,0],   l:[1,1,1,1], nu:20, r:700},
-        {lm:1.4,  sm:.8,  u:[.25,0,1,0], l:[1,1,1,1], nu:20, r:600},
-        {lm:1,    sm:1,   u:[0,0,0,1],   l:[1,1,1,1], nu:3, r:3000}
+        {lm:.1, sm:.75,  u:[1,0,0,0],   l:[1,1,1,1], nu:30, r:250},
+        {lm:.2,    sm:1,   u:[0,1,0,0],   l:[1,1,1,1], nu:20, r:700},
+        {lm:.4,  sm:.8,  u:[.25,0,1,0], l:[1,1,1,1], nu:20, r:600},
+        {lm:.1,    sm:1,   u:[0,0,0,1],   l:[1,1,1,1], nu:3, r:3000}
       ],
       
       units = [
@@ -354,15 +354,14 @@
           fire: function(enemyPoint, enemySlot) {
             var projectile = $('<p class="b' + type + '">');
             var start = Board.s2mp(point);
-            
             projectile
               .css({
                 top: start.y - 21,
                 left: start.x - 3
               }).appendTo(b)
               .animate({
-                top: enemyPoint.y,
-                left: enemyPoint.x
+                top: parseInt(enemyPoint.y) - 5 + 'px',
+                left: parseInt(enemyPoint.x) + 15 + 'px'
               }, (Board.diff(point, enemySlot) / 25) + 125, function() {
                 projectile.remove();
               });
