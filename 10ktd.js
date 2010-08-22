@@ -33,8 +33,8 @@
       currUnit = 0,
 
       b = $('#b'),
-      moneyEl = $('#money b'),
-      lifeEl = $('#life b'),
+      moneyEl = $('#mo b'),
+      lifeEl = $('#li b'),
       bSize = b.width(),
       rowsAndCols = bSize/gridSize,
       numLocations = 21*13,
