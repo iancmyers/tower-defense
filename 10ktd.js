@@ -16,6 +16,8 @@
         {x:17, y:7, r:90},
         {x:20, y:7, r:90}
       ],
+      LEFT = "left",
+      TOP = "top",
       MAX_DAMAGE = 200,
       MAX_RANGE = 6,
       MAX_RELOAD = 100,
@@ -60,7 +62,7 @@
         $(this).toggleClass('h');
       },
       
-      UNIT = function (percentage, type, level, speedMultiplier, additionalArmor, lifeMultiplier) {
+      U = function (percentage, type, level, speedMultiplier, additionalArmor, lifeMultiplier) {
         return {
           p: percentage,
           t: type,
@@ -87,10 +89,10 @@
         // nu = number of total units in round
         // r  = rate of unit arrival
         
-        {u:[UNIT(1,0,0)], nu:20, r:500},
-        {u:[UNIT(1,1,0)], nu:12, r:850},
-        {u:[UNIT(1,2,0)], nu:7,  r:850},
-        {u:[UNIT(1,3,0)], nu:1,  r:2500},
+        {u:[U(1,0,0)], nu:20, r:500},
+        {u:[U(1,1,0)], nu:12, r:850},
+        {u:[U(1,2,0)], nu:7,  r:850},
+        {u:[U(1,3,0)], nu:1,  r:2500},
         
         {u:[UNIT(.25,0,0),UNIT(1,0,1)], nu:30, r:300},
         {u:[UNIT(.5,1,0),UNIT(1,1,1)], nu:25, r:500},
