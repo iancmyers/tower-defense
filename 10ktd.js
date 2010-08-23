@@ -1,7 +1,7 @@
 (function (window, undefined) {
   
   var gridSize = 50,
-      LEVEL_WAIT = 15000,
+      LEVEL_WAIT = 30000,
       KEY_SLOTS = [
         {x:0, y:7, r:90},
         {x:3, y:7, r:0},
@@ -16,6 +16,8 @@
         {x:17, y:7, r:90},
         {x:20, y:7, r:90}
       ],
+      LEFT = "left",
+      TOP = "top",
       MAX_DAMAGE = 200,
       MAX_RANGE = 6,
       MAX_RELOAD = 100,
@@ -29,13 +31,15 @@
       rand = math.random,
       floor = math.floor,
       max = math.max,
+      min = math.min,
       abs = math.abs,
       setTimeout = window.setTimeout,
       setInterval = window.setInterval,
       clearInterval = window.clearInterval,
       clearTimeout = window.clearTimeout,
       currUnit = 0,
-
+      timeouts = [],
+      intervals = [];
       b = $('#b'),
       moneyEl = $('#mo b'),
       lifeEl = $('#li b'),
@@ -94,12 +98,13 @@
         }
       },
       
-      UNIT = function (percentage, type, level, lifeMultiplier, speedMultiplier) {
+      U = function (percentage, type, level, speedMultiplier, additionalArmor, lifeMultiplier) {
         return {
           p: percentage,
           t: type,
           l: level,
           lm: lifeMultiplier || 1,
+          a: additionalArmor || 0,
           sm: speedMultiplier || 1
         };
       },
@@ -120,10 +125,30 @@
         // nu = number of total units in round
         // r  = rate of unit arrival
         
-        {u:[UNIT(1,0,0)], nu:20, r:500},
-        {u:[UNIT(1,1,0)], nu:12, r:700},
-        {u:[UNIT(1,2,0)], nu:7,  r:850},
-        {u:[UNIT(1,3,0)], nu:1,  r:2500}
+        {u:[U(1,0,0)], nu:20, r:500},
+        {u:[U(1,1,0)], nu:12, r:850},
+        {u:[U(1,2,0)], nu:7,  r:850},
+        {u:[U(1,3,0)], nu:1,  r:2500},
+        
+        {u:[U(.25,0,0),U(1,0,1)], nu:30, r:300},
+        {u:[U(.5,1,0),U(1,1,1)], nu:25, r:500},
+        {u:[U(.5,2,0),U(1,2,1)], nu:12, r:1100},
+        {u:[U(.5,3,0),U(1,3,1)], nu:4, r:900},
+        
+        {u:[U(.25,0,1),U(1,0,2)], nu:10, r:300},
+        {u:[U(.75,1,1),U(1,1,2)], nu:30, r:500},
+        {u:[U(.5,2,1),U(1,2,2)], nu:7, r:1100},
+        {u:[U(.5,3,1),U(1,3,2)], nu:2, r:900},
+        
+        {u:[U(.5,0,2),U(1,0,3)], nu:15, r:300},
+        {u:[U(.3,1,2),U(1,1,3)], nu:12, r:500},
+        {u:[U(.1,2,2),U(1,2,3)], nu:5, r:1100},
+        {u:[U(.5,3,2),U(1,3,3)], nu:3, r:900},
+        
+        {u:[U(1,0,3)], nu:15, r:300},
+        {u:[U(1,1,3)], nu:15, r:500},
+        {u:[U(1,2,3)], nu:15, r:1100},
+        {u:[U(1,3,3)], nu:1, r:900}
       ],
       
       units = [
@@ -134,7 +159,7 @@
           cost: 5
         },
         {
-          rate: 400,
+          rate: 680,
           range: 2,
           damage: 25,
           cost: 10
@@ -150,26 +175,30 @@
       enemies = [
         {
           s:500,
-          hp:50,
-          p:.50
+          hp:35,
+          p:.50,
+          a:0
         },
         
         {
-          s:600,
-          hp:175,
-          p:.75
+          s:1325,
+          hp:80,
+          p:.75,
+          a:3
         },
 
         {
           s:600,
-          hp:250,
-          p:1
+          hp:140,
+          p:1,
+          a:1
         },
 
         {
-          s:1000,
-          hp:1500,
-          p:2.50
+          s:900,
+          hp:1100,
+          p:5,
+          a:1
         }
       ],
 
@@ -206,15 +235,18 @@
             nextLevel = levels[level++];
 
             if (!nextLevel) {
+              Game.stop(true);
               return; // game over once all enemies are gone
             }
 
             $('#n').text(LEVEL_WAIT/1000);
             levelTimer = setTimeout(startLevel, LEVEL_WAIT);
+            timeouts.push(levelTimer);
           };
           queueNextLevel();
           
-          setInterval(function () {$('#n').text(parseInt($('#n').text())-1);}, 1000);
+          var unkI = setInterval(function () {$('#n').text(parseInt($('#n').text())-1);}, 1000);
+          intervals.push(unkI);
           
           $('#sk').click(function () {
             clearTimeout(levelTimer);
@@ -241,12 +273,20 @@
           $('#s1 p').css('width', units[currUnit].damage/MAX_DAMAGE*100 + "%");
           $('#s2 p').css('width', units[currUnit].range/MAX_RANGE*100 + "%");
           $('#s3 p').css('width', MAX_RELOAD/units[currUnit].rate*100 + "%");
-        });
+        }).end().find('.u0').parent().click();
       },
       
-      stop: function() {
-        //alert('Game over, man. Game over.');
-        $('#b p, #b b, #b i').remove();
+      stop: function(win) {
+        for(var i = 0; i < timeouts.length; i++)
+          clearTimeout(timeouts[i]);
+
+        for(var i = 0; i < intervals.length; i++)
+          clearInterval(intervals[i]);
+        
+        if(win)
+          alert('A WINNER IS YOU!\nKILLS: ' + kills + '\nLIVES LOST: ' + 20-life);
+        else
+          alert('Game over, man. Game over.\nKILLS: ' + kills);
       },
   
       click: function (event) {
@@ -280,9 +320,10 @@
           if (!enemy) {
             console.error("Err");
           } else {
-            Enemy(enemy.t, enemy.lm, enemy.sm, enemy.l);
+            Enemy(enemy.t, enemy.lm, enemy.sm, enemy.a, enemy.l);
           }
-          setTimeout(loop, level.r);
+          var unleashT = setTimeout(loop, level.r);
+          timeouts.push(unleashT);
         }
       }());
     },
@@ -325,7 +366,9 @@
   
   Game.start();
   
-  function Enemy(type, hpMultiplier, speedMultiplier, level) {
+  function Enemy(type, hpMultiplier, speedMultiplier, additionalArmor, level) {
+    additionalArmor += level*2;
+    hpMultiplier += level;
     var locationMark = 0,
         keepGoing = true,
         currentKeySlot = KEY_SLOTS[locationMark++],
@@ -333,7 +376,7 @@
         offset = rand()*15,
         el = $('<b>').addClass('e' + type + ' l' + (level || "0")).css({left:currentKeyPoint.x-50-12+'px',top:currentKeyPoint.y-9+'px'}),
         e = enemies[type],
-        properties = {p:e.p, s: e.s*speedMultiplier, hp:e.hp*hpMultiplier},
+        properties = {p:e.p, s: e.s*speedMultiplier, hp:e.hp*hpMultiplier, a:e.a+additionalArmor},
         
         interval = setInterval(function () {
           slots.forEach(function (slot) {
@@ -342,8 +385,7 @@
               slot.eLoc(self, Board.p2s(left, top), {x:left, y:top});
             }
           });
-        }, 25),
-        
+        }, 25),        
         self = {
           nextPoint: function () {
             if (!life || !keepGoing) return;
@@ -353,13 +395,13 @@
               life--;
               lifeEl.html(life);
               if (life <= 0) {
-                Game.stop();
+                Game.stop(false);
               }
               el.remove();
               clearInterval(interval);
               return;
             }
-            duration = Board.diff(currentKeySlot, nextSlot) * e.s;
+            duration = Board.diff(currentKeySlot, nextSlot) * properties.s;
             
             currSlot = currentKeySlot,
             currentKeySlot = nextSlot;
@@ -368,7 +410,10 @@
           },
           
           moveTo: function (point, deg, duration) {
-            el.css('-webkit-transform','rotate('+deg+'deg)').animate({
+            el.css({
+              '-webkit-transform':'rotate('+deg+'deg)',
+              '-moz-transform':'rotate('+deg+'deg)'
+            }).animate({
               top : point.y-9 + 'px',
               left : point.x-12 + 'px'
             }, duration, 'linear', function () {
@@ -377,7 +422,7 @@
           },
           
           hitFor: function (damage) {
-            properties.hp -= damage;
+            properties.hp -= max(1, damage-properties.a);
             if (properties.hp < 0) self.die();
           },
           
@@ -395,7 +440,9 @@
               }
             });
           }
+          
         };
+        intervals.push(interval);
     
     b.append(el);
     self.nextPoint();
@@ -419,6 +466,7 @@
                 enemy.hitFor(units[type].damage);
                 self.fire(currentEnemyPoint, currentEnemySlot);
               }, units[type].rate);
+              intervals.push(fireInterval);
             } else if (currentTarget == enemy && Board.diff(point, enemySlot) > units[type].range) {
               self.died(enemy);
             } else if (currentTarget == enemy) {
@@ -452,7 +500,10 @@
           },
           
           rotate: function (angle) {
-            el.css('-webkit-transform', 'rotate(' + angle + 'deg)');
+            el.css({
+              '-webkit-transform':'rotate(' + angle + 'deg)',
+              '-moz-transform':'rotate(' + angle + 'deg)'
+            });
           },
           
           upgrade: function () {
@@ -460,9 +511,6 @@
             if (money >= costToUpgrade) {
               currentLevel++;
               subtractMoney(costToUpgrade);
-              
-            
-            
             }
           },
           
