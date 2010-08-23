@@ -55,7 +55,7 @@
         $(this).find('span').remove();
         $(this).toggleClass('h');
       },
-      
+
       showOptions = function (slot) {
         $('#b #options').remove();
         if ($('#'+ slot.i).find('i').length == 1) {
@@ -73,29 +73,36 @@
         }
       },
       
+      UNIT = function (percentage, type, level, lifeMultiplier, speedMultiplier) {
+        return {
+          p: percentage,
+          t: type,
+          l: level,
+          lm: lifeMultiplier || 1,
+          sm: speedMultiplier || 1
+        };
+      },
+
       addMoney = function(diff) {
         money += diff;
-        $(moneyEl).html('$' + parseFloat(money));
+        $(moneyEl).html('$' + parseFloat(money).toFixed(2));
       },
       
       subtractMoney = function(diff) {
         money -= diff;
-        $(moneyEl).html('$' + parseFloat(money));
+        $(moneyEl).html('$' + parseFloat(money).toFixed(2));
       },
       
       levels=[
       
-        // lm = life multiplyer
-        // sm = speed multiplyer
-        // u  = unit percentage (2 for not in this round)
-        // l  = unit levels
+        // u  = array of untis
         // nu = number of total units in round
         // r  = rate of unit arrival
         
-        {lm:1, sm:2.5, u:[1,0,0,0],   l:[0,0,0,0], nu:20, r:500},
-        {lm:1, sm:2.5, u:[0,1,0,0],   l:[0,0,0,0], nu:10, r:800},
-        {lm:1, sm:2.5, u:[0,0,1,0],   l:[0,0,0,0], nu:5, r:800},
-        {lm:1, sm:2.5, u:[0,0,0,1],   l:[0,0,0,0], nu:3, r:2000}
+        {u:[UNIT(1,0,0)], nu:20, r:500},
+        {u:[UNIT(1,1,0)], nu:12, r:700},
+        {u:[UNIT(1,2,0)], nu:7,  r:850},
+        {u:[UNIT(1,3,0)], nu:1,  r:2500}
       ],
       
       units = [
@@ -169,18 +176,36 @@
           pathArray.indexOf(i)<0 ? s.hover(toggleOn,toggleOff) : s.addClass('no').data('uw',true).append('<em>');
           b.append(s);
         }
-    
-        (function queueNextLevel() {
-          var nextLevel = levels[level++];
+        
+        
+        (function () {
+          var nextLevel, levelTimer, queueNextLevel;
           
-          if (!nextLevel) {
-            return; // game over once all enemies are gone
-          }
+          queueNextLevel = function () {
+            nextLevel = levels[level++];
+
+            if (!nextLevel) {
+              return; // game over once all enemies are gone
+            }
+
+            $('#n').text(LEVEL_WAIT/1000);
+            levelTimer = setTimeout(startLevel, LEVEL_WAIT);
+          };
+          queueNextLevel();
           
-          setTimeout(function () {
+          setInterval(function () {$('#n').text(parseInt($('#n').text())-1);}, 1000);
+          
+          $('#sk').click(function () {
+            clearTimeout(levelTimer);
+            startLevel()
+            return false;
+          });
+          
+          function startLevel() {
+            $('#c').text(level);
             unleashMob(nextLevel);
             queueNextLevel();
-          }, LEVEL_WAIT);
+          }
         }());
         
         // Event to change the current weapon on the legend
@@ -217,20 +242,19 @@
       var i=level.nu;
       (function loop() {
         if (i--) {
-          var ui, r = rand();
+          var ui, r = rand(), enemy;
           
           for (ui = 0; ui < level.u.length; ui++) {
-            if (r < level.u[ui]) {
+            if (r < level.u[ui].p) {
+              enemy = level.u[ui];
               break;
             }
           }
           
-          console.log(ui);
-          
-          if (!enemies[ui]) {
+          if (!enemy) {
             console.error("Err");
           } else {
-            Enemy(ui, level.lm, level.sm, level.l[ui]);
+            Enemy(enemy.t, enemy.lm, enemy.sm, enemy.l);
           }
           setTimeout(loop, level.r);
         }
