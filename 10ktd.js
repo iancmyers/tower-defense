@@ -33,8 +33,9 @@
       currUnit = 0,
 
       b = $('#b'),
-      moneyEl = $('#money b'),
-      lifeEl = $('#life b'),
+      moneyEl = $('#mo b'),
+      lifeEl = $('#li b'),
+      killEl = $('#ki b'),
       bSize = b.width(),
       rowsAndCols = bSize/gridSize,
       numLocations = 21*13,
@@ -67,12 +68,6 @@
         {lm:1, sm:2.5, u:[0,1,0,0],   l:[0,0,0,0], nu:10, r:800},
         {lm:1, sm:2.5, u:[0,0,1,0],   l:[0,0,0,0], nu:5, r:800},
         {lm:1, sm:2.5, u:[0,0,0,1],   l:[0,0,0,0], nu:3, r:2000}
-        /*                                     
-        {lm:.1, sm:.75,  u:[1,0,0,0],   l:[1,1,1,1], nu:30, r:250},
-        {lm:.2,    sm:1,   u:[0,1,0,0],   l:[1,1,1,1], nu:20, r:700},
-        {lm:.4,  sm:.8,  u:[.25,0,1,0], l:[1,1,1,1], nu:20, r:600},
-        {lm:.1,    sm:1,   u:[0,0,0,1],   l:[1,1,1,1], nu:3, r:3000}
-        */
       ],
       
       units = [
@@ -312,6 +307,8 @@
             clearInterval(interval);
             money += properties.p*hpMultiplier;
             moneyEl.html('$' + parseFloat(money).toFixed(2));
+            var kills = parseInt($(killEl).html());
+            killEl.html(kills+1);
             
             slots.forEach(function (slot) {
               if (slot) {
