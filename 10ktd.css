@@ -1,5 +1,5 @@
-body{background:#444;}
-#b{position:relative;height:650px;width:1050px;background:#333;}
+body{background:#111;}
+#b{position:relative;height:651px;width:1051px;background:#00344d;}
 .h{background:blue;}
 #b div,.e0,.e1,.e2,.e4,.l0,.l1,.l2,.l3,.u0,.u1,.u2,.b0,.b1,.b2,#c5,#c10,#c20{position:absolute;top:0;left:0;background-image:url('sprite.png') !important;background-repeat:no-repeat;}
 #b div{position:absolute;background:none 0 -124px;}
