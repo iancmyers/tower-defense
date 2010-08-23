@@ -333,15 +333,17 @@
         fireInterval = null,
         currentEnemyPoint = null,
         currentEnemySlot = null,
+        currentLevel = 0,
+        currentType = type;
         self = {
           eLoc: function (enemy, enemySlot, enemyPoint) {
-            if (!currentTarget && Board.diff(point, enemySlot) <= units[type].range) {
+            if (!currentTarget && Board.diff(point, enemySlot) <= units[currentType].range) {
               currentTarget = enemy;
               fireInterval = setInterval(function () {
-                enemy.hitFor(units[type].damage);
+                enemy.hitFor(units[currentType].damage);
                 self.fire(currentEnemyPoint, currentEnemySlot);
-              }, units[type].rate);
-            } else if (currentTarget == enemy && Board.diff(point, enemySlot) > units[type].range) {
+              }, units[currentType].rate);
+            } else if (currentTarget == enemy && Board.diff(point, enemySlot) > units[currentType].range) {
               self.died(enemy);
             } else if (currentTarget == enemy) {
               currentEnemyPoint = enemyPoint;
@@ -375,6 +377,23 @@
           
           rotate: function (angle) {
             el.css('-webkit-transform', 'rotate(' + angle + 'deg)');
+          },
+          
+          upgrade: function () {
+            var costToUpgrade = (currentLevel + 1) * units[currentType].cost;
+            if (money >= costToUpgrade) {
+              currentLevel++;
+              money -= costToUpgrade;
+              moneyEl.html('$' + parseFloat(money).toFixed(2));
+              currentType++;
+            
+            
+            }
+          },
+          
+          sell: function () {
+            var costToSell = (currentLevel + 1) * 0.75;
+            money += costToSell;
           }
         };
     
