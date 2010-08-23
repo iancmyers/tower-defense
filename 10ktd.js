@@ -93,7 +93,6 @@
         {u:[UNIT(1,3,0)], nu:1,  r:2500},
         
         {u:[UNIT(.25,0,0),UNIT(1,0,1)], nu:30, r:300},
-        
         {u:[UNIT(.5,1,0),UNIT(1,1,1)], nu:25, r:500},
         {u:[UNIT(.5,2,0),UNIT(1,2,1)], nu:12, r:1100},
         {u:[UNIT(.5,3,0),UNIT(1,3,1)], nu:4, r:900}
@@ -218,7 +217,7 @@
           $('#s1 p').css('width', units[currUnit].damage/MAX_DAMAGE*100 + "%");
           $('#s2 p').css('width', units[currUnit].range/MAX_RANGE*100 + "%");
           $('#s3 p').css('width', MAX_RELOAD/units[currUnit].rate*100 + "%");
-        });
+        }).end().find('.u0').parent().click();
       },
       
       stop: function() {
