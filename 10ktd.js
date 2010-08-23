@@ -1,7 +1,7 @@
 (function (window, undefined) {
   
   var gridSize = 50,
-      LEVEL_WAIT = 15000,
+      LEVEL_WAIT = 30000,
       KEY_SLOTS = [
         {x:0, y:7, r:90},
         {x:3, y:7, r:0},
@@ -85,7 +85,9 @@
         {u:[UNIT(1,0,0)], nu:20, r:500},
         {u:[UNIT(1,1,0)], nu:12, r:700},
         {u:[UNIT(1,2,0)], nu:7,  r:850},
-        {u:[UNIT(1,3,0)], nu:1,  r:2500}
+        {u:[UNIT(1,3,0)], nu:1,  r:2500},
+        
+        {u:[UNIT(.25,0,0),UNIT(1,0,1,2,2)], nu:30, r:300}
       ],
       
       units = [
