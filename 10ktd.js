@@ -56,6 +56,23 @@
         $(this).toggleClass('h');
       },
       
+      showOptions = function (slot) {
+        $('#b #options').remove();
+        if ($('#'+ slot.i).find('i').length == 1) {
+          var buffer = [];
+          buffer.push(
+            '<div id="options" style="width:' + 6*gridSize + ';">',
+              '<span class="upgrade">UPRADE</span>',
+              '<span class="sell">SELL</span>',
+              '<span class="upSellVals">DAMAGE</span>',          
+            '</div>');
+          
+          // figure out where to append the options
+          
+          
+        }
+      },
+      
       addMoney = function(diff) {
         money += diff;
         $(moneyEl).html('$' + parseFloat(money));
@@ -166,7 +183,7 @@
           }, LEVEL_WAIT);
         }());
         
-        // Event to change the current weapon
+        // Event to change the current weapon on the legend
         $('#l .lu').click(function(event) {
           currUnit = $(this).find('p')[0];
           currUnit = parseInt(currUnit.className.split('u')[1]);
@@ -189,6 +206,8 @@
           if (!slot && money >= units[currUnit].cost) {
             var el = event.el;
             slots[event.i] = Unit(currUnit, el, Board.p2s(el.css('left'), el.css('top')));
+          } else if (slot) {
+            showOptions(event);
           }
         }
       }
@@ -341,17 +360,16 @@
         fireInterval = null,
         currentEnemyPoint = null,
         currentEnemySlot = null,
-        currentLevel = 0,
-        currentType = type;
+        currentLevel = 0
         self = {
           eLoc: function (enemy, enemySlot, enemyPoint) {
-            if (!currentTarget && Board.diff(point, enemySlot) <= units[currentType].range) {
+            if (!currentTarget && Board.diff(point, enemySlot) <= units[type].range) {
               currentTarget = enemy;
               fireInterval = setInterval(function () {
-                enemy.hitFor(units[currentType].damage);
+                enemy.hitFor(units[type].damage);
                 self.fire(currentEnemyPoint, currentEnemySlot);
-              }, units[currentType].rate);
-            } else if (currentTarget == enemy && Board.diff(point, enemySlot) > units[currentType].range) {
+              }, units[type].rate);
+            } else if (currentTarget == enemy && Board.diff(point, enemySlot) > units[type].range) {
               self.died(enemy);
             } else if (currentTarget == enemy) {
               currentEnemyPoint = enemyPoint;
@@ -388,12 +406,11 @@
           },
           
           upgrade: function () {
-            var costToUpgrade = (currentLevel + 1) * units[currentType].cost;
+            var costToUpgrade = (currentLevel + 1) * units[type].cost;
             if (money >= costToUpgrade) {
               currentLevel++;
-              money -= costToUpgrade;
-              moneyEl.html('$' + parseFloat(money).toFixed(2));
-              currentType++;
+              subtractMoney(costToUpgrade);
+              
             
             
             }
@@ -401,7 +418,7 @@
           
           sell: function () {
             var costToSell = (currentLevel + 1) * 0.75;
-            money += costToSell;
+            addMoney(costToSell)
           }
         };
     
