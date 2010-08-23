@@ -85,14 +85,15 @@
         // nu = number of total units in round
         // r  = rate of unit arrival
         
-        {u:[UNIT(1,0,3)], nu:20, r:500},
+        {u:[UNIT(1,0,0)], nu:20, r:500},
         {u:[UNIT(1,1,0)], nu:12, r:700},
         {u:[UNIT(1,2,0)], nu:7,  r:850},
         {u:[UNIT(1,3,0)], nu:1,  r:2500},
         
-        {u:[UNIT(.25,0,0),UNIT(1,0,1,)], nu:30, r:300},
-        {u:[UNIT(1,1,1)], nu:30, r:500}
-        
+        {u:[UNIT(.25,0,0),UNIT(1,0,1)], nu:30, r:300},
+        {u:[UNIT(.25,1,0),UNIT(1,1,1)], nu:25, r:500},
+        {u:[UNIT(.25,2,0),UNIT(1,2,1)], nu:12, r:500},
+        {u:[UNIT(.25,3,0),UNIT(1,3,1)], nu:4, r:500}
       ],
       
       units = [
