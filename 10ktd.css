@@ -25,7 +25,9 @@ body{background:#444;}
 .b2{background:none -22px -114px;}
 
 /* Legend */
-#l{padding:0 0 7px;position:absolute;top:10px;left:10px;background:#000;color:#919191;font-family:"Helvetica Neue","Helvetica","Arial",sans;font-size:13px;font-weight:bold;}
+#l,
+#options{font-family:"Helvetica Neue","Helvetica","Arial",sans;}
+#l{padding:0 0 7px;position:absolute;top:10px;left:10px;background:#000;color:#919191;font-size:13px;font-weight:bold;}
 
 /* Units and costs */
 .lu{float:left;padding:15px 9px 13px;margin:0 20px 0 0;border:1px solid #000;border-width:0 1px;}
@@ -53,3 +55,10 @@ body{background:#444;}
 #ki {width:70px;}
 #lv {width:75px;}
 
+/* Upgrade and sell */
+#options{position:absolute;z-index:50;margin:0;padding:5px;background-color:#000;border:1px solid #396477;color:#fff;font-size:9px;}
+#options span{float:left;width:50px;height:40px;margin:0 5px 0 0;text-align:center;}
+#options span b{display:block;margin:5px 0 0 0;color:#f2930f;font-size:18px;}
+.upgrade{padding:5px;border:1px solid #396477;background-color:#292929;}
+.sell{padding:5px;border:1px solid #396477;}
+.upSellVals{}

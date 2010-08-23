@@ -59,19 +59,37 @@
         $(this).toggleClass('h');
       },
 
-      showOptions = function (slot) {
-        $('#b #options').remove();
-        if ($('#'+ slot.i).find('i').length == 1) {
+      showOptions = function (s) {
+        slot = $('#'+ s.i);
+        if ($(slot).find('i').length == 1) {
           var buffer = [];
           buffer.push(
-            '<div id="options" style="width:' + 6*gridSize + ';">',
-              '<span class="upgrade">UPRADE</span>',
-              '<span class="sell">SELL</span>',
-              '<span class="upSellVals">DAMAGE</span>',          
-            '</div>');
+            '<p id="options">',
+              '<span class="upgrade">UPGRADE<b>$25</b></span>',
+              '<span class="sell">SELL<b>$20</b></span>',
+              '<span class="upSellVals">',
+              
+              '</span>',          
+            '</p>');
           
           // figure out where to append the options
+          var x = parseInt($(slot).css('left').split('px')[0]),
+              y = parseInt($(slot).css('top').split('px')[0]),
+              halfWidth = (gridSize*21)/2,
+              halfHeight = (gridSize*13)/2,
+              optionWidth = gridSize*6,
+              left;
+
+          if (x < (gridSize*21)-optionWidth) {
+            console.log('right edge - go left');
+            left = x + gridSize;
+          } else {
+            console.log('left edge - go right');
+            left = x - (6*gridSize);
+          }
           
+          $('#b').append(buffer.join(''));
+          $('#options').css({'width' : '290px', 'height' : '50px', 'top' : y+'px', 'left' : left+'px'});
           
         }
       },
@@ -227,11 +245,13 @@
       },
       
       stop: function() {
-        alert('Game over, man. Game over.');
+        //alert('Game over, man. Game over.');
         $('#b p, #b b, #b i').remove();
       },
   
       click: function (event) {
+        if($('#b #options').length == 1)
+          $('#b #options').remove();
         if (event.t=='slot') {
           slot = slots[event.i];
           if (!slot && money >= units[currUnit].cost) {
@@ -267,7 +287,7 @@
       }());
     },
     Board = {
-      /* pixels to spot: contverts from pixels to grid location */
+      /* pixels to spot: converts from pixels to grid location */
       p2s: function (x,y) {
         return {x:floor(parseInt(x)/gridSize), y:floor(parseInt(y)/gridSize)};
       },
@@ -390,7 +410,7 @@
         fireInterval = null,
         currentEnemyPoint = null,
         currentEnemySlot = null,
-        currentLevel = 0
+        currentLevel = 0,
         self = {
           eLoc: function (enemy, enemySlot, enemyPoint) {
             if (!currentTarget && Board.diff(point, enemySlot) <= units[type].range) {
