@@ -29,6 +29,7 @@
       rand = math.random,
       floor = math.floor,
       max = math.max,
+      min = math.min,
       abs = math.abs,
       setTimeout = window.setTimeout,
       setInterval = window.setInterval,
@@ -59,12 +60,13 @@
         $(this).toggleClass('h');
       },
       
-      UNIT = function (percentage, type, level, speedMultiplier, lifeMultiplier) {
+      UNIT = function (percentage, type, level, speedMultiplier, additionalArmor, lifeMultiplier) {
         return {
           p: percentage,
           t: type,
           l: level,
           lm: lifeMultiplier || 1,
+          a: additionalArmor || 0,
           sm: speedMultiplier || 1
         };
       },
@@ -91,9 +93,10 @@
         {u:[UNIT(1,3,0)], nu:1,  r:2500},
         
         {u:[UNIT(.25,0,0),UNIT(1,0,1)], nu:30, r:300},
-        {u:[UNIT(.25,1,0),UNIT(1,1,1)], nu:25, r:500},
-        {u:[UNIT(.25,2,0),UNIT(1,2,1)], nu:12, r:500},
-        {u:[UNIT(.25,3,0),UNIT(1,3,1)], nu:4, r:500}
+        
+        {u:[UNIT(.5,1,0),UNIT(1,1,1)], nu:25, r:500},
+        {u:[UNIT(.5,2,0),UNIT(1,2,1)], nu:12, r:1100},
+        {u:[UNIT(.5,3,0),UNIT(1,3,1)], nu:4, r:900}
       ],
       
       units = [
@@ -104,7 +107,7 @@
           cost: 5
         },
         {
-          rate: 400,
+          rate: 680,
           range: 2,
           damage: 25,
           cost: 10
@@ -120,29 +123,29 @@
       enemies = [
         {
           s:500,
-          hp:50,
+          hp:35,
           p:.50,
           a:0
         },
         
         {
-          s:1250,
-          hp:175,
+          s:1325,
+          hp:80,
           p:.75,
-          a:2
+          a:3
         },
 
         {
           s:600,
-          hp:250,
+          hp:140,
           p:1,
           a:1
         },
 
         {
           s:900,
-          hp:1500,
-          p:2.50,
+          hp:1100,
+          p:5,
           a:1
         }
       ],
@@ -250,7 +253,7 @@
           if (!enemy) {
             console.error("Err");
           } else {
-            Enemy(enemy.t, enemy.lm, enemy.sm, enemy.l);
+            Enemy(enemy.t, enemy.lm, enemy.sm, enemy.a, enemy.l);
           }
           setTimeout(loop, level.r);
         }
@@ -295,7 +298,8 @@
   
   Game.start();
   
-  function Enemy(type, hpMultiplier, speedMultiplier, level) {
+  function Enemy(type, hpMultiplier, speedMultiplier, additionalArmor, level) {
+    additionalArmor += level*2;
     hpMultiplier += level;
     var locationMark = 0,
         keepGoing = true,
@@ -304,7 +308,7 @@
         offset = rand()*15,
         el = $('<b>').addClass('e' + type + ' l' + (level || "0")).css({left:currentKeyPoint.x-50-12+'px',top:currentKeyPoint.y-9+'px'}),
         e = enemies[type],
-        properties = {p:e.p, s: e.s*speedMultiplier, hp:e.hp*hpMultiplier, a:e.a},
+        properties = {p:e.p, s: e.s*speedMultiplier, hp:e.hp*hpMultiplier, a:e.a+additionalArmor},
         
         interval = setInterval(function () {
           slots.forEach(function (slot) {
@@ -351,7 +355,7 @@
           },
           
           hitFor: function (damage) {
-            properties.hp -= damage-properties.a;
+            properties.hp -= max(1, damage-properties.a);
             if (properties.hp < 0) self.die();
           },
           
