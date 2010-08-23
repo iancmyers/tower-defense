@@ -19,6 +19,7 @@
       life,
       money,
       level,
+      kills,
       loopTimeout,
       timeOfLastLoop,
       math = Math,
@@ -35,6 +36,7 @@
       b = $('#b'),
       moneyEl = $('#mo b'),
       lifeEl = $('#li b'),
+      killEl = $('#ki b'),
       bSize = b.width(),
       rowsAndCols = bSize/gridSize,
       numLocations = 21*13,
@@ -63,15 +65,10 @@
         // nu = number of total units in round
         // r  = rate of unit arrival
         
-        {lm:.1, sm:1, u:[1,0,0,0],   l:[0,0,0,1], nu:20, r:300},
-        {lm:.1, sm:1, u:[0,1,0,0],   l:[0,0,0,1], nu:15, r:800},
-        {lm:.1, sm:1, u:[0,0,1,0],   l:[0,0,0,1], nu:10, r:600},
-        {lm:.1, sm:1, u:[0,0,0,1],   l:[0,0,0,1], nu:2, r:2000},
-                                             
-        {lm:.1, sm:.75,  u:[1,0,0,0],   l:[1,1,1,1], nu:30, r:250},
-        {lm:.2,    sm:1,   u:[0,1,0,0],   l:[1,1,1,1], nu:20, r:700},
-        {lm:.4,  sm:.8,  u:[.25,0,1,0], l:[1,1,1,1], nu:20, r:600},
-        {lm:.1,    sm:1,   u:[0,0,0,1],   l:[1,1,1,1], nu:3, r:3000}
+        {lm:1, sm:2.5, u:[1,0,0,0],   l:[0,0,0,0], nu:20, r:500},
+        {lm:1, sm:2.5, u:[0,1,0,0],   l:[0,0,0,0], nu:10, r:800},
+        {lm:1, sm:2.5, u:[0,0,1,0],   l:[0,0,0,0], nu:5, r:800},
+        {lm:1, sm:2.5, u:[0,0,0,1],   l:[0,0,0,0], nu:3, r:2000}
       ],
       
       units = [
@@ -99,24 +96,24 @@
         {
           s:500,
           hp:50,
-          p:.25
+          p:.50
         },
         
         {
-          s:1000,
+          s:600,
           hp:175,
-          p:.50
-        },
-
-        {
-          s:700,
-          hp:100,
-          p:.50
+          p:.75
         },
 
         {
           s:600,
-          hp:1000,
+          hp:250,
+          p:1
+        },
+
+        {
+          s:1000,
+          hp:1500,
           p:2.50
         }
       ],
@@ -311,6 +308,8 @@
             clearInterval(interval);
             money += properties.p*hpMultiplier;
             moneyEl.html('$' + parseFloat(money).toFixed(2));
+            kills = parseInt($(killEl).html());
+            killEl.html(kills+1);
             
             slots.forEach(function (slot) {
               if (slot) {
