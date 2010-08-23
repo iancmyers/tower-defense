@@ -78,10 +78,7 @@
       
       levels=[
       
-        // lm = life multiplyer
-        // sm = speed multiplyer
-        // u  = unit percentage (2 for not in this round)
-        // l  = unit levels
+        // u  = array of untis
         // nu = number of total units in round
         // r  = rate of unit arrival
         
@@ -89,13 +86,6 @@
         {u:[UNIT(1,1,0)], nu:12, r:700},
         {u:[UNIT(1,2,0)], nu:7,  r:850},
         {u:[UNIT(1,3,0)], nu:1,  r:2500}
-        
-        
-        
-        // {lm:1, sm:2.5, u:[1,0,0,0],   l:[0,0,0,0], nu:20, r:500},
-        // {lm:1, sm:2.5, u:[0,1,0,0],   l:[0,0,0,0], nu:10, r:800},
-        // {lm:1, sm:2.5, u:[0,0,1,0],   l:[0,0,0,0], nu:5, r:800},
-        // {lm:1, sm:2.5, u:[0,0,0,1],   l:[0,0,0,0], nu:3, r:2000}
       ],
       
       units = [
@@ -169,26 +159,36 @@
           pathArray.indexOf(i)<0 ? s.hover(toggleOn,toggleOff) : s.addClass('no').data('uw',true).append('<em>');
           b.append(s);
         }
-    
-        (function queueNextLevel() {
-          var nextLevel = levels[level++];
+        
+        
+        (function () {
+          var nextLevel, levelTimer, queueNextLevel;
           
-          if (!nextLevel) {
-            return; // game over once all enemies are gone
-          }
+          queueNextLevel = function () {
+            nextLevel = levels[level++];
+
+            if (!nextLevel) {
+              return; // game over once all enemies are gone
+            }
+
+            $('#n').text(LEVEL_WAIT/1000);
+            levelTimer = setTimeout(startLevel, LEVEL_WAIT);
+          };
+          queueNextLevel();
           
-          var levelTimer = setTimeout(function () {
-            $('#lv b').text(level);
-            unleashMob(nextLevel);
-            queueNextLevel();
-          }, LEVEL_WAIT);
+          setInterval(function () {$('#n').text(parseInt($('#n').text())-1);}, 1000);
           
           $('#sk').click(function () {
             clearTimeout(levelTimer);
-            unleashMob(nextLevel);
-            queueNextLevel();
+            startLevel()
             return false;
           });
+          
+          function startLevel() {
+            $('#c').text(level);
+            unleashMob(nextLevel);
+            queueNextLevel();
+          }
         }());
         
         // Event to change the current weapon
