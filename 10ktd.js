@@ -339,7 +339,10 @@
           },
           
           moveTo: function (point, deg, duration) {
-            el.css('-webkit-transform','rotate('+deg+'deg)').animate({
+            el.css({
+              '-webkit-transform':'rotate('+deg+'deg)',
+              '-moz-transform':'rotate('+deg+'deg)'
+            }).animate({
               top : point.y-9 + 'px',
               left : point.x-12 + 'px'
             }, duration, 'linear', function () {
@@ -422,7 +425,10 @@
           },
           
           rotate: function (angle) {
-            el.css('-webkit-transform', 'rotate(' + angle + 'deg)');
+            el.css({
+              '-webkit-transform':'rotate(' + angle + 'deg)',
+              '-moz-transform':'rotate(' + angle + 'deg)'
+            });
           }
         };
     
