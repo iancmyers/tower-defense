@@ -177,10 +177,18 @@
             return; // game over once all enemies are gone
           }
           
-          setTimeout(function () {
+          var levelTimer = setTimeout(function () {
+            $('#lv b').text(level);
             unleashMob(nextLevel);
             queueNextLevel();
           }, LEVEL_WAIT);
+          
+          $('#sk').click(function () {
+            clearTimeout(levelTimer);
+            unleashMob(nextLevel);
+            queueNextLevel();
+            return false;
+          });
         }());
         
         // Event to change the current weapon
@@ -227,7 +235,6 @@
           if (!enemy) {
             console.error("Err");
           } else {
-            console.log(enemy)
             Enemy(enemy.t, enemy.lm, enemy.sm, enemy.l);
           }
           setTimeout(loop, level.r);
@@ -274,7 +281,6 @@
   Game.start();
   
   function Enemy(type, hpMultiplier, speedMultiplier, level) {
-    console.log(type, hpMultiplier, speedMultiplier, level);
     var locationMark = 0,
         keepGoing = true,
         currentKeySlot = KEY_SLOTS[locationMark++],
