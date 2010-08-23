@@ -29,6 +29,7 @@
       rand = math.random,
       floor = math.floor,
       max = math.max,
+      min = math.min,
       abs = math.abs,
       setTimeout = window.setTimeout,
       setInterval = window.setInterval,
@@ -59,12 +60,13 @@
         $(this).toggleClass('h');
       },
       
-      UNIT = function (percentage, type, level, speedMultiplier, lifeMultiplier) {
+      UNIT = function (percentage, type, level, speedMultiplier, additionalArmor, lifeMultiplier) {
         return {
           p: percentage,
           t: type,
           l: level,
           lm: lifeMultiplier || 1,
+          a: additionalArmor || 0,
           sm: speedMultiplier || 1
         };
       },
@@ -90,7 +92,7 @@
         {u:[UNIT(1,2,0)], nu:7,  r:850},
         {u:[UNIT(1,3,0)], nu:1,  r:2500},
         
-        {u:[UNIT(.25,0,0),UNIT(1,0,1,)], nu:30, r:300},
+        {u:[UNIT(.25,0,0),UNIT(1,0,1)], nu:30, r:300},
         {u:[UNIT(1,1,1)], nu:30, r:500}
         
       ],
@@ -249,7 +251,7 @@
           if (!enemy) {
             console.error("Err");
           } else {
-            Enemy(enemy.t, enemy.lm, enemy.sm, enemy.l);
+            Enemy(enemy.t, enemy.lm, enemy.sm, enemy.a, enemy.l);
           }
           setTimeout(loop, level.r);
         }
@@ -294,7 +296,7 @@
   
   Game.start();
   
-  function Enemy(type, hpMultiplier, speedMultiplier, level) {
+  function Enemy(type, hpMultiplier, speedMultiplier, additionalArmor, level) {
     hpMultiplier += level;
     var locationMark = 0,
         keepGoing = true,
@@ -303,7 +305,7 @@
         offset = rand()*15,
         el = $('<b>').addClass('e' + type + ' l' + (level || "0")).css({left:currentKeyPoint.x-50-12+'px',top:currentKeyPoint.y-9+'px'}),
         e = enemies[type],
-        properties = {p:e.p, s: e.s*speedMultiplier, hp:e.hp*hpMultiplier, a:e.a},
+        properties = {p:e.p, s: e.s*speedMultiplier, hp:e.hp*hpMultiplier, a:e.a+additionalArmor},
         
         interval = setInterval(function () {
           slots.forEach(function (slot) {
@@ -347,7 +349,7 @@
           },
           
           hitFor: function (damage) {
-            properties.hp -= damage-properties.a;
+            properties.hp -= max(1, damage-properties.a);
             if (properties.hp < 0) self.die();
           },
           
