@@ -59,7 +59,7 @@
         $(this).toggleClass('h');
       },
       
-      UNIT = function (percentage, type, level, lifeMultiplier, speedMultiplier) {
+      UNIT = function (percentage, type, level, speedMultiplier, lifeMultiplier) {
         return {
           p: percentage,
           t: type,
@@ -85,7 +85,7 @@
         // nu = number of total units in round
         // r  = rate of unit arrival
         
-        {u:[UNIT(1,0,0)], nu:20, r:500},
+        {u:[UNIT(1,0,3)], nu:20, r:500},
         {u:[UNIT(1,1,0)], nu:12, r:700},
         {u:[UNIT(1,2,0)], nu:7,  r:850},
         {u:[UNIT(1,3,0)], nu:1,  r:2500},
@@ -291,6 +291,7 @@
   Game.start();
   
   function Enemy(type, hpMultiplier, speedMultiplier, level) {
+    hpMultiplier += level;
     var locationMark = 0,
         keepGoing = true,
         currentKeySlot = KEY_SLOTS[locationMark++],
