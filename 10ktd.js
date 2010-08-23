@@ -55,6 +55,16 @@
         $(this).toggleClass('h');
       },
       
+      UNIT = function (percentage, type, level, lifeMultiplier, speedMultiplier) {
+        return {
+          p: percentage,
+          t: type,
+          l: level,
+          lm: lifeMultiplier || 1,
+          sm: speedMultiplier || 1
+        };
+      },
+      
       levels=[
       
         // lm = life multiplyer
@@ -64,10 +74,13 @@
         // nu = number of total units in round
         // r  = rate of unit arrival
         
-        {lm:1, sm:2.5, u:[1,0,0,0],   l:[0,0,0,0], nu:20, r:500},
-        {lm:1, sm:2.5, u:[0,1,0,0],   l:[0,0,0,0], nu:10, r:800},
-        {lm:1, sm:2.5, u:[0,0,1,0],   l:[0,0,0,0], nu:5, r:800},
-        {lm:1, sm:2.5, u:[0,0,0,1],   l:[0,0,0,0], nu:3, r:2000}
+        {u:[UNIT(1,0,0)], nu:20, r:500},
+        {u:[UNIT(.5,0,0), UNIT(1,1,0)], nu:15, r:500}
+        
+        // {lm:1, sm:2.5, u:[1,0,0,0],   l:[0,0,0,0], nu:20, r:500},
+        // {lm:1, sm:2.5, u:[0,1,0,0],   l:[0,0,0,0], nu:10, r:800},
+        // {lm:1, sm:2.5, u:[0,0,1,0],   l:[0,0,0,0], nu:5, r:800},
+        // {lm:1, sm:2.5, u:[0,0,0,1],   l:[0,0,0,0], nu:3, r:2000}
       ],
       
       units = [
@@ -187,20 +200,20 @@
       var i=level.nu;
       (function loop() {
         if (i--) {
-          var ui, r = rand();
+          var ui, r = rand(), enemy;
           
           for (ui = 0; ui < level.u.length; ui++) {
-            if (r < level.u[ui]) {
+            if (r < level.u[ui].p) {
+              enemy = level.u[ui];
               break;
             }
           }
           
-          console.log(ui);
-          
-          if (!enemies[ui]) {
+          if (!enemy) {
             console.error("Err");
           } else {
-            Enemy(ui, level.lm, level.sm, level.l[ui]);
+            console.log(enemy)
+            Enemy(enemy.t, enemy.lm, enemy.sm, enemy.l);
           }
           setTimeout(loop, level.r);
         }
@@ -246,6 +259,7 @@
   Game.start();
   
   function Enemy(type, hpMultiplier, speedMultiplier, level) {
+    console.log(type, hpMultiplier, speedMultiplier, level);
     var locationMark = 0,
         keepGoing = true,
         currentKeySlot = KEY_SLOTS[locationMark++],
