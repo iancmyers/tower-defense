@@ -56,6 +56,16 @@
         $(this).toggleClass('h');
       },
       
+      addMoney = function(diff) {
+        money += diff;
+        $(moneyEl).html('$' + parseFloat(money));
+      },
+      
+      subtractMoney = function(diff) {
+        money -= diff;
+        $(moneyEl).html('$' + parseFloat(money));
+      },
+      
       levels=[
       
         // lm = life multiplyer
@@ -306,8 +316,7 @@
             el.remove();
             keepGoing = false;
             clearInterval(interval);
-            money += properties.p*hpMultiplier;
-            moneyEl.html('$' + parseFloat(money).toFixed(2));
+            addMoney(properties.p*hpMultiplier);
             kills = parseInt($(killEl).html());
             killEl.html(kills+1);
             
@@ -326,8 +335,7 @@
   }
   
   function Unit(type, slot, point) {
-    money -= units[type].cost;
-    moneyEl.html('$' + parseFloat(money).toFixed(2));
+    subtractMoney(units[type].cost);
     var el = $('<i>').addClass('u' + type),
         currentTarget = null,
         fireInterval = null,
