@@ -68,12 +68,12 @@
         
       addMoney = function(diff) {
         money += diff;
-        $(moneyEl).html('$' + parseFloat(money));
+        $(moneyEl).html('$' + parseFloat(money).toFixed(2));
       },
       
       subtractMoney = function(diff) {
         money -= diff;
-        $(moneyEl).html('$' + parseFloat(money));
+        $(moneyEl).html('$' + parseFloat(money).toFixed(2));
       },
       
       levels=[
@@ -86,7 +86,11 @@
         // r  = rate of unit arrival
         
         {u:[UNIT(1,0,0)], nu:20, r:500},
-        {u:[UNIT(.5,0,0), UNIT(1,1,0)], nu:15, r:500}
+        {u:[UNIT(1,1,0)], nu:10, r:700},
+        {u:[UNIT(1,2,0)], nu:5,  r:850},
+        {u:[UNIT(1,3,0)], nu:3,  r:2500}
+        
+        
         
         // {lm:1, sm:2.5, u:[1,0,0,0],   l:[0,0,0,0], nu:20, r:500},
         // {lm:1, sm:2.5, u:[0,1,0,0],   l:[0,0,0,0], nu:10, r:800},
