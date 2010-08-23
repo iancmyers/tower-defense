@@ -173,10 +173,16 @@
             return; // game over once all enemies are gone
           }
           
-          setTimeout(function () {
+          var levelTimer = setTimeout(function () {
+            $('#sk b').text(level);
             unleashMob(nextLevel);
             queueNextLevel();
           }, LEVEL_WAIT);
+          
+          $('#sk').click(function () {
+            clearTimeout(levelTimer);
+            queueNextLevel();
+          });
         }());
         
         // Event to change the current weapon
