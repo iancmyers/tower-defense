@@ -38,7 +38,8 @@
       clearInterval = window.clearInterval,
       clearTimeout = window.clearTimeout,
       currUnit = 0,
-
+      timeouts = [],
+      intervals = [];
       b = $('#b'),
       moneyEl = $('#mo b'),
       lifeEl = $('#li b'),
@@ -199,15 +200,18 @@
             nextLevel = levels[level++];
 
             if (!nextLevel) {
+              Game.stop(true);
               return; // game over once all enemies are gone
             }
 
             $('#n').text(LEVEL_WAIT/1000);
             levelTimer = setTimeout(startLevel, LEVEL_WAIT);
+            timeouts.push(levelTimer);
           };
           queueNextLevel();
           
-          setInterval(function () {$('#n').text(parseInt($('#n').text())-1);}, 1000);
+          var unkI = setInterval(function () {$('#n').text(parseInt($('#n').text())-1);}, 1000);
+          intervals.push(unkI);
           
           $('#sk').click(function () {
             clearTimeout(levelTimer);
@@ -237,9 +241,17 @@
         }).end().find('.u0').parent().click();
       },
       
-      stop: function() {
-        alert('Game over, man. Game over.');
-        $('#b p, #b b, #b i').remove();
+      stop: function(win) {
+        for(var i = 0; i < timeouts.length; i++)
+          clearTimeout(timeouts[i]);
+
+        for(var i = 0; i < intervals.length; i++)
+          clearInterval(intervals[i]);
+        
+        if(win)
+          alert('A WINNER IS YOU!\nKILLS: ' + kills + '\nLIVES LOST: ' + 20-life);
+        else
+          alert('Game over, man. Game over.\nKILLS: ' + kills);
       },
   
       click: function (event) {
@@ -271,7 +283,8 @@
           } else {
             Enemy(enemy.t, enemy.lm, enemy.sm, enemy.a, enemy.l);
           }
-          setTimeout(loop, level.r);
+          var unleashT = setTimeout(loop, level.r);
+          timeouts.push(unleashT);
         }
       }());
     },
@@ -333,8 +346,7 @@
               slot.eLoc(self, Board.p2s(left, top), {x:left, y:top});
             }
           });
-        }, 25),
-        
+        }, 25),        
         self = {
           nextPoint: function () {
             if (!life || !keepGoing) return;
@@ -344,7 +356,7 @@
               life--;
               lifeEl.html(life);
               if (life <= 0) {
-                Game.stop();
+                Game.stop(false);
               }
               el.remove();
               clearInterval(interval);
@@ -389,7 +401,9 @@
               }
             });
           }
+          
         };
+        intervals.push(interval);
     
     b.append(el);
     self.nextPoint();
@@ -412,6 +426,7 @@
                 enemy.hitFor(units[type].damage);
                 self.fire(currentEnemyPoint, currentEnemySlot);
               }, units[type].rate);
+              intervals.push(fireInterval);
             } else if (currentTarget == enemy && Board.diff(point, enemySlot) > units[type].range) {
               self.died(enemy);
             } else if (currentTarget == enemy) {
