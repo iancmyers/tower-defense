@@ -46,6 +46,10 @@ body{background:#444;}
 
 /* Money and life */
 #ml{clear:both;border:1px solid #00344d; border-width:1px 0 0 0; padding:6px;}
-#ml span {width:33%;float:left;}
+#ml span {float:left;}
 #ml b {color:#f2930f;}
+#mo {width:120px;}
+#li {width:60px;}
+#ki {width:90px;}
+#sk {width:100px;}
 
