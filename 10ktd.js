@@ -94,9 +94,9 @@
         
         {u:[UNIT(.25,0,0),UNIT(1,0,1)], nu:30, r:300},
         
-        {u:[UNIT(.25,1,0),UNIT(1,1,1)], nu:25, r:500},
-        {u:[UNIT(.25,2,0),UNIT(1,2,1)], nu:12, r:500},
-        {u:[UNIT(.25,3,0),UNIT(1,3,1)], nu:4, r:500}
+        {u:[UNIT(.5,1,0),UNIT(1,1,1)], nu:25, r:500},
+        {u:[UNIT(.5,2,0),UNIT(1,2,1)], nu:12, r:1100},
+        {u:[UNIT(.5,3,0),UNIT(1,3,1)], nu:4, r:900}
       ],
       
       units = [
@@ -107,7 +107,7 @@
           cost: 5
         },
         {
-          rate: 400,
+          rate: 680,
           range: 2,
           damage: 25,
           cost: 10
@@ -123,16 +123,16 @@
       enemies = [
         {
           s:500,
-          hp:30,
+          hp:35,
           p:.50,
           a:0
         },
         
         {
-          s:1250,
+          s:1325,
           hp:80,
           p:.75,
-          a:2
+          a:3
         },
 
         {
@@ -145,7 +145,7 @@
         {
           s:900,
           hp:1100,
-          p:2.50,
+          p:5,
           a:1
         }
       ],
@@ -299,6 +299,7 @@
   Game.start();
   
   function Enemy(type, hpMultiplier, speedMultiplier, additionalArmor, level) {
+    additionalArmor += level*2;
     hpMultiplier += level;
     var locationMark = 0,
         keepGoing = true,
