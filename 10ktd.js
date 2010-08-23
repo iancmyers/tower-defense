@@ -85,8 +85,8 @@
         // nu = number of total units in round
         // r  = rate of unit arrival
         
-        {u:[UNIT(1,0,3)], nu:20, r:500},
-        {u:[UNIT(1,1,0)], nu:12, r:700},
+        {u:[UNIT(1,0,0)], nu:20, r:500},
+        {u:[UNIT(1,1,0)], nu:12, r:850},
         {u:[UNIT(1,2,0)], nu:7,  r:850},
         {u:[UNIT(1,3,0)], nu:1,  r:2500},
         
@@ -120,25 +120,29 @@
         {
           s:500,
           hp:50,
-          p:.50
+          p:.50,
+          a:0
         },
         
         {
-          s:600,
+          s:1250,
           hp:175,
-          p:.75
+          p:.75,
+          a:2
         },
 
         {
           s:600,
           hp:250,
-          p:1
+          p:1,
+          a:1
         },
 
         {
-          s:1000,
+          s:900,
           hp:1500,
-          p:2.50
+          p:2.50,
+          a:1
         }
       ],
 
@@ -299,7 +303,7 @@
         offset = rand()*15,
         el = $('<b>').addClass('e' + type + ' l' + (level || "0")).css({left:currentKeyPoint.x-50-12+'px',top:currentKeyPoint.y-9+'px'}),
         e = enemies[type],
-        properties = {p:e.p, s: e.s*speedMultiplier, hp:e.hp*hpMultiplier},
+        properties = {p:e.p, s: e.s*speedMultiplier, hp:e.hp*hpMultiplier, a:e.a},
         
         interval = setInterval(function () {
           slots.forEach(function (slot) {
@@ -343,7 +347,7 @@
           },
           
           hitFor: function (damage) {
-            properties.hp -= damage;
+            properties.hp -= damage-properties.a;
             if (properties.hp < 0) self.die();
           },
           
