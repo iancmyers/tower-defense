@@ -16,6 +16,9 @@
         {x:17, y:7, r:90},
         {x:20, y:7, r:90}
       ],
+      MAX_DAMAGE = 200,
+      MAX_RANGE = 6,
+      MAX_RELOAD = 100,
       life,
       money,
       level,
@@ -115,13 +118,13 @@
         {
           rate: 400,
           range: 2,
-          damage: 18,
+          damage: 25,
           cost: 10
         },
         {
-          rate: 300,
+          rate: 250,
           range: 4,
-          damage: 11,
+          damage: 15,
           cost: 20
         }
       ],
@@ -212,11 +215,14 @@
         $('#l .lu').click(function(event) {
           currUnit = $(this).find('p')[0];
           currUnit = parseInt(currUnit.className.split('u')[1]);
-          //console.log(currUnit);
 
           var unit = $('#l .lu')[currUnit];          
           $('#l .lu').removeClass('on').addClass('off');
           $(unit).addClass('on');
+          
+          $('#s1 p').css('width', units[currUnit].damage/MAX_DAMAGE*100 + "%");
+          $('#s2 p').css('width', units[currUnit].range/MAX_RANGE*100 + "%");
+          $('#s3 p').css('width', MAX_RELOAD/units[currUnit].rate*100 + "%");
         });
       },
       
