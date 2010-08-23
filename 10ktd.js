@@ -322,7 +322,7 @@
               clearInterval(interval);
               return;
             }
-            duration = Board.diff(currentKeySlot, nextSlot) * e.s;
+            duration = Board.diff(currentKeySlot, nextSlot) * properties.s;
             
             currSlot = currentKeySlot,
             currentKeySlot = nextSlot;
