@@ -19,6 +19,7 @@
       life,
       money,
       level,
+      kills,
       loopTimeout,
       timeOfLastLoop,
       math = Math,
@@ -312,7 +313,7 @@
             clearInterval(interval);
             money += properties.p*hpMultiplier;
             moneyEl.html('$' + parseFloat(money).toFixed(2));
-            var kills = parseInt($(killEl).html());
+            kills = parseInt($(killEl).html());
             killEl.html(kills+1);
             
             slots.forEach(function (slot) {
