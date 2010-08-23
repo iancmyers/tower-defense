@@ -174,14 +174,16 @@
           }
           
           var levelTimer = setTimeout(function () {
-            $('#sk b').text(level);
+            $('#lv b').text(level);
             unleashMob(nextLevel);
             queueNextLevel();
           }, LEVEL_WAIT);
           
           $('#sk').click(function () {
             clearTimeout(levelTimer);
+            unleashMob(nextLevel);
             queueNextLevel();
+            return false;
           });
         }());
         
@@ -229,7 +231,6 @@
           if (!enemy) {
             console.error("Err");
           } else {
-            console.log(enemy)
             Enemy(enemy.t, enemy.lm, enemy.sm, enemy.l);
           }
           setTimeout(loop, level.r);
@@ -276,7 +277,6 @@
   Game.start();
   
   function Enemy(type, hpMultiplier, speedMultiplier, level) {
-    console.log(type, hpMultiplier, speedMultiplier, level);
     var locationMark = 0,
         keepGoing = true,
         currentKeySlot = KEY_SLOTS[locationMark++],
