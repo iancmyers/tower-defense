@@ -18,8 +18,8 @@
       ],
       LEFT = "left",
       TOP = "top",
-      MAX_DAMAGE = 200,
-      MAX_RANGE = 6,
+      MAX_D = 200,
+      MAX_RA = 6,
       MAX_RELOAD = 100,
       life,
       money,
@@ -45,7 +45,6 @@
       lifeEl = $('#li b'),
       killEl = $('#ki b'),
       bSize = b.width(),
-      rowsAndCols = bSize/gridSize,
       numLocations = 21*13,
       slots=new Array(numLocations),
       slot=undefined,
@@ -74,12 +73,12 @@
         };
       },
 
-      addMoney = function(diff) {
+      AM = function(diff) {
         money += diff;
         $(moneyEl).html('$' + parseFloat(money).toFixed(2));
       },
       
-      subtractMoney = function(diff) {
+      SM = function(diff) {
         money -= diff;
         $(moneyEl).html('$' + parseFloat(money).toFixed(2));
       },
@@ -88,7 +87,7 @@
       
         // u  = array of untis
         // nu = number of total units in round
-        // r  = rate of unit arrival
+        // r  = R of unit arrival
         
         {u:[U(1,0,0)], nu:20, r:500},
         {u:[U(1,1,0)], nu:12, r:850},
@@ -118,22 +117,22 @@
       
       units = [
         {
-          rate: 200,
-          range: 3,
-          damage: 5,
-          cost: 5
+          R: 200,
+          RA: 3,
+          D: 5,
+          C: 5
         },
         {
-          rate: 680,
-          range: 2,
-          damage: 25,
-          cost: 10
+          R: 680,
+          RA: 2,
+          D: 25,
+          C: 10
         },
         {
-          rate: 250,
-          range: 4,
-          damage: 15,
-          cost: 20
+          R: 250,
+          RA: 4,
+          D: 15,
+          C: 20
         }
       ],
       
@@ -235,9 +234,9 @@
           $('#l .lu').removeClass('on').addClass('off');
           $(unit).addClass('on');
           
-          $('#s1 p').css('width', units[currUnit].damage/MAX_DAMAGE*100 + "%");
-          $('#s2 p').css('width', units[currUnit].range/MAX_RANGE*100 + "%");
-          $('#s3 p').css('width', MAX_RELOAD/units[currUnit].rate*100 + "%");
+          $('#s1 p').css('width', units[currUnit].D/MAX_D*100 + "%");
+          $('#s2 p').css('width', units[currUnit].RA/MAX_RA*100 + "%");
+          $('#s3 p').css('width', MAX_RELOAD/units[currUnit].R*100 + "%");
         }).end().find('.u0').parent().click();
       },
       
@@ -259,7 +258,7 @@
           $('#b #options').remove();
         if (event.t=='slot') {
           slot = slots[event.i];
-          if (!slot && money >= units[currUnit].cost) {
+          if (!slot && money >= units[currUnit].C) {
             var el = event.el;
             slots[event.i] = Unit(currUnit, el, Board.p2s(el.css('left'), el.css('top')));
           } else if (slot) {
@@ -386,8 +385,8 @@
             });
           },
           
-          hitFor: function (damage) {
-            properties.hp -= max(1, damage-properties.a);
+          hitFor: function (D) {
+            properties.hp -= max(1, D-properties.a);
             if (properties.hp < 0) self.die();
           },
           
@@ -395,7 +394,7 @@
             el.remove();
             keepGoing = false;
             clearInterval(interval);
-            addMoney(properties.p*hpMultiplier);
+            AM(properties.p*hpMultiplier);
             kills = parseInt($(killEl).html());
             killEl.html(kills+1);
             
@@ -416,7 +415,7 @@
   }
   
   function Unit(type, slot, point) {
-    subtractMoney(units[type].cost);
+    SM(units[type].C);
     var el = $('<i>').addClass('u' + type),
         currentTarget = null,
         fireInterval = null,
@@ -424,14 +423,14 @@
         currentEnemySlot = null,
         self = {
           eLoc: function (enemy, enemySlot, enemyPoint) {
-            if (!currentTarget && Board.diff(point, enemySlot) <= units[type].range) {
+            if (!currentTarget && Board.diff(point, enemySlot) <= units[type].RA) {
               currentTarget = enemy;
               fireInterval = setInterval(function () {
-                enemy.hitFor(units[type].damage);
+                enemy.hitFor(units[type].D);
                 self.fire(currentEnemyPoint, currentEnemySlot);
-              }, units[type].rate);
+              }, units[type].R);
               intervals.push(fireInterval);
-            } else if (currentTarget == enemy && Board.diff(point, enemySlot) > units[type].range) {
+            } else if (currentTarget == enemy && Board.diff(point, enemySlot) > units[type].RA) {
               self.died(enemy);
             } else if (currentTarget == enemy) {
               currentEnemyPoint = enemyPoint;
