@@ -62,41 +62,6 @@
         $(this).find('span').remove();
         $(this).toggleClass('h');
       },
-
-      showOptions = function (s) {
-        slot = $('#'+ s.i);
-        if ($(slot).find('i').length == 1) {
-          var buffer = [];
-          buffer.push(
-            '<p id="options">',
-              '<span class="upgrade">UPGRADE<b>$25</b></span>',
-              '<span class="sell">SELL<b>$20</b></span>',
-              '<span class="upSellVals">',
-              
-              '</span>',          
-            '</p>');
-          
-          // figure out where to append the options
-          var x = parseInt($(slot).css('left').split('px')[0]),
-              y = parseInt($(slot).css('top').split('px')[0]),
-              halfWidth = (gridSize*21)/2,
-              halfHeight = (gridSize*13)/2,
-              optionWidth = gridSize*6,
-              left;
-
-          if (x < (gridSize*21)-optionWidth) {
-            console.log('right edge - go left');
-            left = x + gridSize;
-          } else {
-            console.log('left edge - go right');
-            left = x - (6*gridSize);
-          }
-          
-          $('#b').append(buffer.join(''));
-          $('#options').css({'width' : '290px', 'height' : '50px', 'top' : y+'px', 'left' : left+'px'});
-          
-        }
-      },
       
       U = function (percentage, type, level, speedMultiplier, additionalArmor, lifeMultiplier) {
         return {
@@ -457,7 +422,6 @@
         fireInterval = null,
         currentEnemyPoint = null,
         currentEnemySlot = null,
-        currentLevel = 0,
         self = {
           eLoc: function (enemy, enemySlot, enemyPoint) {
             if (!currentTarget && Board.diff(point, enemySlot) <= units[type].range) {
@@ -504,19 +468,6 @@
               '-webkit-transform':'rotate(' + angle + 'deg)',
               '-moz-transform':'rotate(' + angle + 'deg)'
             });
-          },
-          
-          upgrade: function () {
-            var costToUpgrade = (currentLevel + 1) * units[type].cost;
-            if (money >= costToUpgrade) {
-              currentLevel++;
-              subtractMoney(costToUpgrade);
-            }
-          },
-          
-          sell: function () {
-            var costToSell = (currentLevel + 1) * 0.75;
-            addMoney(costToSell)
           }
         };
     
