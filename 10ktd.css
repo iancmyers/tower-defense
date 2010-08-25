@@ -1,6 +1,5 @@
 body{background:#111;}
 #b{position:relative;height:651px;width:1051px;background:#00344d;}
-.h{background:blue;}
 #b div,.e0,.e1,.e2,.e4,.l0,.l1,.l2,.l3,.u0,.u1,.u2,.b0,.b1,.b2,#c5,#c10,#c20{position:absolute;top:0;left:0;background-image:url('sprite.png') !important;background-repeat:no-repeat;}
 #b div{position:absolute;background:none 0 -124px;}
 #b em{position:absolute;float:left;width:51px;height:51px;background:rgba(19,19,19,.75);z-index:1;}
@@ -32,7 +31,7 @@ body{background:#111;}
 
 /* Legend */
 #l,
-#options{font-family:"Helvetica Neue","Helvetica","Arial",sans;}
+#options{font-family:"Helvetica Neue","Helvetica",sans;}
 #l{padding:0 0 7px;position:absolute;top:10px;left:10px;background:#000;color:#919191;font-size:13px;font-weight:bold;}
 
 /* Units and costs */
@@ -56,11 +55,3 @@ body{background:#111;}
 #li {width:60px;}
 #ki {width:70px;}
 #lv {width:75px;}
-
-/* Upgrade and sell */
-#options{position:absolute;z-index:50;margin:0;padding:5px;background-color:#000;border:1px solid #396477;color:#fff;font-size:9px;}
-#options span{float:left;width:50px;height:40px;margin:0 5px 0 0;text-align:center;}
-#options span b{display:block;margin:5px 0 0 0;color:#f2930f;font-size:18px;}
-.upgrade{padding:5px;border:1px solid #396477;background-color:#292929;}
-.sell{padding:5px;border:1px solid #396477;}
-.upSellVals{}
