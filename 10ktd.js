@@ -235,7 +235,7 @@
             nextLevel = levels[level++];
 
             if (!nextLevel) {
-              Game.stop(true);
+              // Need to move this to once all the enemies are gone Game.stop(true);
               return; // game over once all enemies are gone
             }
 
