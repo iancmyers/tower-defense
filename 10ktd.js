@@ -248,9 +248,9 @@
           clearInterval(intervals[i]);
         
         if(win)
-          alert('A WINNER IS YOU!\nKILLS: ' + kills + '\nLIVES LOST: ' + 20-life);
+          alert('WINNER');
         else
-          alert('Game over, man. Game over.\nKILLS: ' + kills);
+          alert('Game Over.');
       },
   
       click: function (event) {
