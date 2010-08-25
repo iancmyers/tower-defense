@@ -30,9 +30,7 @@ body{background:#111;}
 .b2{background:none -22px -114px;}
 
 /* Legend */
-#l,
-#options{font-family:"Helvetica Neue","Helvetica",sans;}
-#l{padding:0 0 7px;position:absolute;top:10px;left:10px;background:#000;color:#919191;font-size:13px;font-weight:bold;}
+#l{font-family:"Helvetica Neue","Helvetica",sans;padding:0 0 7px;position:absolute;top:10px;left:10px;background:#000;color:#919191;font-size:13px;font-weight:bold;}
 
 /* Units and costs */
 .lu{float:left;padding:15px 9px 13px;margin:0 20px 0 0;border:1px solid #000;border-width:0 1px;}
